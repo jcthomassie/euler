@@ -23,8 +23,8 @@ lowest to highest, in the following way:
 If two players have the same ranked hands then the rank made up of the highest
 value wins; for example, a pair of eights beats a pair of fives (see example 1
 below). But if two ranks tie, for example, both players have a pair of queens,
-then highestcards in each hand are compared (see example 4 below); if the
-highest cards tie then thenext highest cards are compared, and so on.
+then highest cards in each hand are compared (see example 4 below); if the
+highest cards tie then the next highest cards are compared, and so on.
 
 Consider the following five hands dealt to two players:
 
@@ -54,36 +54,186 @@ player's hand is in no specific order, and in each hand there is a clear winner.
 
 How many hands does Player 1 win?
 """
+from collections import Counter
 from utils import print_result
 
 
 class Card:
+    """
+    Playing card representation. Allows ordering operations between cards, and
+    instantiation from a string representation.
+    """
     # Suit values
     suits = {
         char: val
         for val, char in enumerate("CDHS")
     }
+    suits_inv = {
+        val: char
+        for char, val in suits.items()
+    }
     # Face values
     faces = {
         char: val
-        for val, char in enumerate(list("23456789") + list(("10",)) + list("JQKA"))
+        for val, char in enumerate("23456789TJQKA")
     }
-    __slots__ = ["value", "suit"]
+    faces_inv = {
+        val: char
+        for char, val in faces.items()
+    }
+    __slots__ = ("face_value", "suit_value")
 
-    def __init__(self, value: int, suit: int):
-        self.value = value
-        self.suit = suit
+    def __init__(self, face_value: int, suit_value: int):
+        self.face_value = face_value
+        self.suit_value = suit_value
+
+    def __eq__(self, other):
+        return (
+            self.face_value == other.face_value and
+            self.suit_value == other.suit_value
+        )
+
+    def __gt__(self, other):
+        return (
+            self.face_value > other.face_value or
+            self.face_value == other.face_value and
+            self.suit_value > other.suit_value
+        )
+
+    def __lt__(self, other):
+        return (
+            self.face_value < other.face_value or
+            self.face_value == other.face_value and
+            self.suit_value < other.suit_value
+        )
+
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}"
+            f"({self.face_value}, {self.suit_value})"
+        )
+
+    def __str__(self) -> str:
+        return (
+            f"{self.faces_inv[self.face_value]}"
+            f"{self.suits_inv[self.suit_value]}"
+        )
 
     @classmethod
     def from_str(cls, string: str):
-        cls(
-            cls.faces[string[:-1]],
+        return cls(
+            cls.faces[string[0]],
             cls.suits[string[-1]],
         )
 
+
+class Hand:
+    """
+    Poker hand representation. Contains a list of 5 Card objects. Allows
+    ordering operations between hands.
+    """
+    #__slots__ = ("cards", "_face_counts", "_suit_counts")
+
+    def __init__(self, *cards):
+        self.cards = cards
+        self._face_counts = Counter()
+        self._suit_counts = Counter()
+        self._max = None
+
+    @property
+    def face_counts(self):
+        if not self._face_counts:
+            self._face_counts.update(
+                c.face_value for c in self.cards
+            )
+        return self._face_counts
+
+    @property
+    def suit_counts(self):
+        if not self._suit_counts:
+            self._suit_counts.update(
+                c.suit_value for c in self.cards
+            )
+        return self._suit_counts
+
+    def max(self):
+        if self._max is None:
+            self._max = max(self.cards)
+        return self._max
+
+    def is_pair(self):
+        return len(self.face_counts) < len(self.cards)
+
+    def is_two_pair(self):
+        return False
+
+    def is_three_of_a_kind(self):
+        return max()
+
+    def is_straight(self):
+        faces = sorted(c.face_value for c in self.cards)
+        for a, b in zip(faces, faces[1:]):
+            if b != (a + 1):
+                return False
+        return True
+
+    def is_flush(self):
+        suits = set(c.suit_value for c in self.cards)
+        return len(suits) == 1
+
+    def is_full_house(self):
+        return False
+
+    def is_four_of_a_kind(self):
+        return False
+
+    def is_straight_flush(self):
+        return (
+            self.is_straight() and
+            self.is_flush()
+        )
+
+    def is_royal_flush(self):
+        return (
+            self.is_straight_flush() and
+            all(c.face_value >= Card.faces["T"] for c in self.cards)
+        )
+
+    def __gt__(self, other):
+        return self.max() > other.max()
+
+    def __str__(self) -> str:
+        return (
+            f"{self.__class__.__name__}"
+            f"({' '.join(str(c) for c in self.cards)})"
+        )
+
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}"
+            f"({', '.join(repr(c) for c in self.cards)})"
+        )
+
+
+def scrape_data(path: str="data/p054_poker.txt"):
+    """
+    Scrape card data from text file and load it into two Hands, one line at a
+    time. Yields Hand pairs.
+    """
+    with open(path, "r") as h:
+        for line in h:
+            cards = [
+                Card.from_str(card_str)
+                for card_str in line.strip().split()
+            ]
+            yield Hand(*cards[:5]), Hand(*cards[5:])
+
 @print_result
 def solve():
-    return
+    scores = [0, 0]
+    for p1_hand, p2_hand in scrape_data():
+        scores[p2_hand > p1_hand] += 1
+    return scores[0]
 
 if __name__ == "__main__":
     solve()

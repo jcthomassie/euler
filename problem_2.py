@@ -12,10 +12,11 @@ By considering the terms in the Fibonacci sequence whose values do not exceed
 four million, find the sum of the even-valued terms.
 """
 import functools
+from utils import print_result
 
 
 @functools.lru_cache(1000000, typed=True)
-def fibonacci(n):
+def fibonacci(n: int) -> int:
     """
     Compute the N-th fibonacci number.
     """
@@ -23,12 +24,12 @@ def fibonacci(n):
         return 1
     return fibonacci(n - 1) + fibonacci(n - 2)
 
+@print_result
 def solve():
     total = 0
     n = 2
     while True:
         value = fibonacci(n)
-        print(f"{n: 7d}: {total}")
         if value > 4000000:
             break
         total += value

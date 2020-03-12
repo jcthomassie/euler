@@ -54,6 +54,7 @@ player's hand is in no specific order, and in each hand there is a clear winner.
 
 How many hands does Player 1 win?
 """
+from utils import print_result
 
 
 class Card:
@@ -69,17 +70,18 @@ class Card:
     }
     __slots__ = ["value", "suit"]
 
-    def __init__(self, value, suit):
+    def __init__(self, value: int, suit: int):
         self.value = value
         self.suit = suit
 
     @classmethod
-    def from_str(cls, string):
+    def from_str(cls, string: str):
         cls(
             cls.faces[string[:-1]],
             cls.suits[string[-1]],
         )
 
+@print_result
 def solve():
     return
 

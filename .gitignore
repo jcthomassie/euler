@@ -1,1 +1,4 @@
 *.json
+*.pyc
+*.pyd
+__pycache__/

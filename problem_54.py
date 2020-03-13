@@ -54,6 +54,7 @@ player's hand is in no specific order, and in each hand there is a clear winner.
 
 How many hands does Player 1 win?
 """
+import enum
 from collections import Counter
 from utils import print_result
 
@@ -94,6 +95,8 @@ class Card:
         )
 
     def __gt__(self, other):
+        if other is None:
+            return True
         return (
             self.face_value > other.face_value or
             self.face_value == other.face_value and
@@ -101,6 +104,8 @@ class Card:
         )
 
     def __lt__(self, other):
+        if other is None:
+            return False
         return (
             self.face_value < other.face_value or
             self.face_value == other.face_value and
@@ -132,75 +137,133 @@ class Hand:
     Poker hand representation. Contains a list of 5 Card objects. Allows
     ordering operations between hands.
     """
-    #__slots__ = ("cards", "_face_counts", "_suit_counts")
+    _faces_descending = range(len(Card.faces))[::-1]
+    _suits_descending = range(len(Card.suits))[::-1]
+
+    __slots__ = ("cards", "_face_counts", "_suit_counts")
 
     def __init__(self, *cards):
-        self.cards = cards
-        self._face_counts = Counter()
-        self._suit_counts = Counter()
-        self._max = None
+        # Cards are sorted in descending order; max is always first card
+        self.cards = sorted(cards, reverse=True)
+        self._face_counts = None
+        self._suit_counts = None
 
     @property
     def face_counts(self):
-        if not self._face_counts:
-            self._face_counts.update(
+        if self._face_counts is None:
+            self._face_counts = Counter(
                 c.face_value for c in self.cards
             )
         return self._face_counts
 
     @property
     def suit_counts(self):
-        if not self._suit_counts:
-            self._suit_counts.update(
+        if self._suit_counts is None:
+            self._suit_counts = Counter(
                 c.suit_value for c in self.cards
             )
         return self._suit_counts
 
-    def max(self):
-        if self._max is None:
-            self._max = max(self.cards)
-        return self._max
+    def get_where(self, face=None, suit=None):
+        """
+        Yield cards that matches the input face and suit in descending order.
+        """
+        for card in self.cards:
+            if (
+                (face is None or card.face_value == face) and
+                (suit is None or card.suit_value == suit)
+            ):
+                yield card
 
-    def is_pair(self):
-        return len(self.face_counts) < len(self.cards)
+    def eval_high(self):
+        """
+        Get highest card.
+        """
+        return self.cards[0]
 
-    def is_two_pair(self):
-        return False
+    def eval_pair(self):
+        for face in self._faces_descending:
+            if self.face_counts[face] == 2:
+                return next(self.get_where(face=face))
 
-    def is_three_of_a_kind(self):
-        return max()
+    def eval_two_pair(self):
+        counts = list(self.face_counts.values())
+        if counts.count(2) >= 2:
+            return self.eval_pair()
 
-    def is_straight(self):
-        faces = sorted(c.face_value for c in self.cards)
+    def eval_three_of_a_kind(self):
+        for face in self._faces_descending:
+            if self.face_counts[face] == 3:
+                return next(self.get_where(face=face))
+
+    def eval_straight(self):
+        faces = sorted((c.face_value for c in self.cards), reverse=True)
         for a, b in zip(faces, faces[1:]):
-            if b != (a + 1):
-                return False
-        return True
+            if b != (a - 1):
+                return
+        return self.cards[0]
 
-    def is_flush(self):
-        suits = set(c.suit_value for c in self.cards)
-        return len(suits) == 1
+    def eval_flush(self):
+        for suit in self._suits_descending:
+            if self.suit_counts[suit] == 5:
+                return self.cards[0]
 
-    def is_full_house(self):
-        return False
+    def eval_full_house(self):
+        counts = self.face_counts.values()
+        if 3 in counts and 2 in counts:
+            return self.eval_three_of_a_kind()
 
-    def is_four_of_a_kind(self):
-        return False
+    def eval_four_of_a_kind(self):
+        for face in self._faces_descending:
+            if self.face_counts[face] == 4:
+                return next(self.get_where(face=face))
 
-    def is_straight_flush(self):
-        return (
-            self.is_straight() and
-            self.is_flush()
-        )
+    def eval_straight_flush(self):
+        if self.eval_straight() and self.eval_flush():
+            return self.cards[0]
 
-    def is_royal_flush(self):
-        return (
-            self.is_straight_flush() and
-            all(c.face_value >= Card.faces["T"] for c in self.cards)
-        )
+    def eval_royal_flush(self):
+        if self.eval_straight_flush():
+            if self.cards[0].face_value == Card.faces["A"]:
+                return self.cards[0]
+
+    hierarchy = [
+        eval_royal_flush,
+        eval_straight_flush,
+        eval_four_of_a_kind,
+        eval_full_house,
+        eval_flush,
+        eval_straight,
+        eval_three_of_a_kind,
+        eval_two_pair,
+        eval_pair,
+        eval_high,
+    ]
+
+    def get_best(self):
+        """
+        Gets best card set from hand.
+        """
+        for method in self.hierarchy:
+            if method(self) is not None:
+                return method.__name__.lstrip("eval_")
 
     def __gt__(self, other):
-        return self.max() > other.max()
+        for method in self.hierarchy:
+            res_s = method(self)
+            res_o = method(other)
+            if res_s is None:
+                if res_o is None:
+                    continue
+                return False
+            if res_s > res_o:
+                return True
+            if res_s < res_o:
+                return False
+        return False
+
+    def __bool__(self):
+        return bool(self.cards)
 
     def __str__(self) -> str:
         return (
@@ -232,7 +295,10 @@ def scrape_data(path: str="data/p054_poker.txt"):
 def solve():
     scores = [0, 0]
     for p1_hand, p2_hand in scrape_data():
-        scores[p2_hand > p1_hand] += 1
+        if p1_hand > p2_hand:
+            scores[0] += 1
+        else:
+            scores[1] += 1
     return scores[0]
 
 if __name__ == "__main__":

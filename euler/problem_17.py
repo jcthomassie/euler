@@ -14,7 +14,7 @@ forty-two) contains 23 letters and 115 (one hundred and fifteen) contains 20
 letters. The use of "and" when writing out numbers is in compliance with British
 usage.
 """
-from utils import print_result
+from .utils import print_result
 
 _FIRST = {
     1: "one",

@@ -13,7 +13,8 @@ Find the lowest sum for a set of five primes for which any two primes
 concatenate to produce another prime.
 """
 from collections import defaultdict
-from utils import print_result, prime_mask
+
+from .utils import print_result, prime_mask
 
 P_MAX = 100000000
 P_MASK = prime_mask(P_MAX)

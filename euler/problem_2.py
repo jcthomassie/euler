@@ -12,7 +12,7 @@ By considering the terms in the Fibonacci sequence whose values do not exceed
 four million, find the sum of the even-valued terms.
 """
 import functools
-from utils import print_result
+from .utils import print_result
 
 
 @functools.lru_cache(1000000, typed=True)

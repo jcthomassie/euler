@@ -56,7 +56,8 @@ How many hands does Player 1 win?
 """
 import enum
 from collections import Counter
-from utils import print_result
+
+from .utils import print_result
 
 
 class Card:

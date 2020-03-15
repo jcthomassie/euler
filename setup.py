@@ -20,6 +20,7 @@ REQUIRES_PYTHON = ">=3.6"
 REQUIRED = [
     "numba",
     "numpy",
+    "pyperclip",
 ]
 PACKAGES = find_packages()
 

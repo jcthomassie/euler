@@ -36,8 +36,6 @@ trying every route. However, Problem 67, is the same challenge with a triangle
 containing one-hundred rows; it cannot be solved by brute force, and requires a
 clever method! ;o)
 """
-from itertools import zip_longest
-
 from .utils import print_result
 
 PYRAMID = [
@@ -58,56 +56,21 @@ PYRAMID = [
     [ 4, 62, 98, 27, 23,  9, 70, 98, 73, 93, 38, 53, 60,  4, 23],
 ]
 
-
-class Node:
-    __slots__ = ["value", "parents", "children"]
-
-    def __init__(self, value):
-        self.value = value
-        self.parents = []
-        self.children = []
-
-    def add_child(self, child):
-        self.children.append(child)
-        child.parents.append(self)
-
-    def add_parent(self, parent):
-        self.parents.append(parent)
-        parent.children.append(self)
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.value})"
-
-
-class Pyramid:
-
-    def __init__(self, nodes):
-        self.nodes = list(nodes)
-
-    @classmethod
-    def from_list(cls, pyramid):
-        tree = cls([])
-        children = []
-        for row in pyramid:
-            parents = children[:]
-            children.clear()
-            for i, value in enumerate(row):
-                node = Node(value)
-                if i - 1:
-                    node.add_parent(parents[i - 1])
-                if i < len(parents):
-                    node.add_parent(parents[i])
-                children.append(node)
-                tree.nodes.append(node)
-        return tree
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.nodes})"
-
+def max_path_sum(pyramid):
+    """
+    Returns the sum of the maximum path in the input pyramid.
+    """
+    children = None
+    for row in pyramid[::-1]:
+        if children:
+            for n in range(len(row)):
+                row[n] += max(children[n], children[n + 1])
+        children = row
+    return children[0]
 
 @print_result
 def solve():
-    return Pyramid.from_list(PYRAMID)
+    return max_path_sum(PYRAMID)
 
 if __name__ == "__main__":
     solve()

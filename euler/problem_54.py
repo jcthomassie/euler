@@ -54,9 +54,10 @@ player's hand is in no specific order, and in each hand there is a clear winner.
 
 How many hands does Player 1 win?
 """
-import enum
+import os
 from collections import Counter
 
+from . import DATA_DIR
 from .utils import print_result
 
 
@@ -279,7 +280,7 @@ class Hand:
         )
 
 
-def scrape_data(path: str="data/p054_poker.txt"):
+def scrape_data(path: str):
     """
     Scrape card data from text file and load it into two Hands, one line at a
     time. Yields Hand pairs.
@@ -294,8 +295,9 @@ def scrape_data(path: str="data/p054_poker.txt"):
 
 @print_result
 def solve():
+    path = os.path.join(DATA_DIR, "p054_poker.txt")
     scores = [0, 0]
-    for p1_hand, p2_hand in scrape_data():
+    for p1_hand, p2_hand in scrape_data(path):
         if p1_hand > p2_hand:
             scores[0] += 1
         else:

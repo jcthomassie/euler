@@ -36,27 +36,22 @@ def simplify(a, b):
 def solve():
     p_a = 1
     p_b = 1
-    for b in range(10, 100):
-        if b % 10 == 0:
-            continue
-        for a in range(10, b):
-            if a % 10 == 0:
-                continue
-            # Remove common digit
-            a_dig = list(str(a))
-            b_dig = list(str(b))
-            try:
-                drop = (set(a_dig) & set(b_dig)).pop()
-                a_dig.remove(drop)
-                b_dig.remove(drop)
-            except KeyError:
-                continue
-            # See if reduced fraction matches
-            a_r = int(a_dig[0])
-            b_r = int(b_dig[0])
-            if a_r / b_r == a / b:
-                p_a *= a
-                p_b *= b
+    # Get 2-digit numbers that are not multiples of 10
+    nums = list(n for n in range(10, 100) if n % 10 != 0)
+    for b in nums:
+        for a in nums:
+            if a >= b:
+                break
+            # Check for possible shared digit
+            a_str = str(a)
+            b_str = str(b)
+            if a_str[1] == b_str[0]:
+                # See if reduced fraction matches
+                a_r = int(a_str[0])
+                b_r = int(b_str[1])
+                if a_r / b_r == a / b:
+                    p_a *= a
+                    p_b *= b
     return simplify(p_a, p_b)[-1]
 
 if __name__ == "__main__":

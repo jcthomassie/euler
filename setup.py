@@ -21,6 +21,7 @@ REQUIRED = [
     "numba",
     "numpy",
     "pyperclip",
+    "beautifulsoup4",
 ]
 PACKAGES = find_packages()
 

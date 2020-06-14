@@ -67,20 +67,14 @@ def a_star(
     if neighbors is None:
         neighbors = ((1, 0), (0, 1), (-1, 0), (0, -1))
 
-    def heuristic(n):
-        return array.min() * (sum(abs(b - a) for a, b in zip(n, end)) - 1)
-
     candidates = set([start])
     parents = dict()
     # Best known scores
-    g_scores = defaultdict(lambda: math.inf)
-    g_scores[start] = array[start[0], start[1]]
-    # Estimated optimal scores
-    f_scores = defaultdict(lambda: math.inf)
-    f_scores[start] = heuristic(start)
+    scores = defaultdict(lambda: math.inf)
+    scores[start] = array[start[0], start[1]]
     while candidates:
-        node = min(candidates, key=lambda n: f_scores[n])
-        # Return path if reached end
+        node = min(candidates, key=lambda n: scores[n])
+        # Return path weights if reached end
         if node == end:
             path = [array[node[0], node[1]]]
             while node in parents:
@@ -97,11 +91,10 @@ def a_star(
             if not 0 <= ni < array.shape[0] or not 0 <= nj < array.shape[1]:
                 continue
             # See if score to neighbor is best
-            score = g_scores[node] + array[node[0], node[1]]
-            if score < g_scores[neighbor]:
+            score = scores[node] + array[node[0], node[1]]
+            if score < scores[neighbor]:
                 parents[neighbor] = node
-                g_scores[neighbor] = score
-                f_scores[neighbor] = score + heuristic(neighbor)
+                scores[neighbor] = score
                 candidates.add(neighbor)
 
 @print_result

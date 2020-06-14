@@ -84,6 +84,7 @@ def a_star(
         candidates.remove(node)
 
         # Check all neighbors to see if current node is better entry point
+        score = scores[node] + array[node[0], node[1]]
         for di, dj in neighbors:
             ni = node[0] + di
             nj = node[1] + dj
@@ -91,7 +92,6 @@ def a_star(
             if not 0 <= ni < array.shape[0] or not 0 <= nj < array.shape[1]:
                 continue
             # See if score to neighbor is best
-            score = scores[node] + array[node[0], node[1]]
             if score < scores[neighbor]:
                 parents[neighbor] = node
                 scores[neighbor] = score

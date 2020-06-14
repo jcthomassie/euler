@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Run any of the implemented problem solutions via commandline.
 """

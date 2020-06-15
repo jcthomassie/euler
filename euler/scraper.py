@@ -108,7 +108,7 @@ class Problem:
         """
         if os.path.isfile(self.module_path):
             return
-        with open(self.module_path, "w") as h:
+        with open(self.module_path, "w", encoding="utf-8") as h:
             h.write(_FILE_TEMPLATE.format(self.module_docstring()))
             return self.module_path
 
@@ -126,7 +126,7 @@ class Problem:
                 continue
             # Copy data from url
             data = requests.get(url)
-            with open(path, "w") as h:
+            with open(path, "w", encoding="utf-8") as h:
                 h.write(data.text)
             downloads.append(path)
         return downloads

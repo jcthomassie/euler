@@ -38,13 +38,10 @@ def prime_mask(n):
     for i in range(2, n):
         if primes[i]:
             # Mark all multiples of i as composite
-            j = 1
-            while True:
-                j += 1
-                composite = i * j
-                if composite >= n:
-                    break
+            composite = 2 * i
+            while composite < n:
                 primes[composite] = False
+                composite += i
     return primes
 
 def prime_list(n):
@@ -52,4 +49,6 @@ def prime_list(n):
     Generates a list of all primes below the input number.
     """
     mask = prime_mask(n)
-    return [i for i in range(n) if mask[i]]
+    if n <= 2:
+        return []
+    return [2, *(i for i in range(3, n, 2) if mask[i])]

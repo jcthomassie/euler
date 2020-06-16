@@ -34,29 +34,33 @@ def sub_primes(n: int):
         c = int(s[i:] + s[:i])
         if P_MASK[a] and P_MASK[b] and P_MASK[c]:
             yield a, b
+            yield from sub_primes(a)
+            yield from sub_primes(b)
 
-def generate_tree():
+def generate_graph():
     """
-    Build tree of all pairs of 'substring' primes in the prime table.
+    Build graph of all pairs of 'substring' primes in the prime table.
     """
-    tree = defaultdict(set)
-    for n, is_prime in enumerate(P_MASK):
-        if is_prime:
+    graph = defaultdict(set)
+    for n in range(11, P_MAX, 2):
+        if P_MASK[n]:
             for a, b in sub_primes(n):
-                tree[a].add(b)
-                tree[b].add(a)
-    return tree
+                graph[a].add(b)
+                graph[b].add(a)
+    return graph
 
-def find_cliques(tree, size=5):
+def find_cliques(graph, size=5):
     """
     Find all cliques of the specified size in the input graph.
     """
-    len_neighbors = lambda n: len(tree[n])
-    # smallest vertex -> largest vertex
-    for node in sorted(tree.keys(), key=len_neighbors, reverse=True):
+    len_neighbors = lambda n: len(graph[n])
+    # largest vertex -> smallest vertex
+    for node in sorted(graph.keys(), key=len_neighbors, reverse=True):
         clique = set((node,))
-        for neighbor in sorted(tree[node], key=len_neighbors, reverse=True):
-            if len(tree[neighbor]) >= size and clique.issubset(tree[neighbor]):
+        for neighbor in sorted(graph[node], key=len_neighbors, reverse=True):
+            if len_neighbors(neighbor) < size:
+                break
+            if clique.issubset(graph[neighbor]):
                 clique.add(neighbor)
                 if len(clique) == size:
                     yield clique
@@ -64,8 +68,8 @@ def find_cliques(tree, size=5):
 
 @print_result
 def solve():
-    tree = generate_tree()
-    return sum(min(find_cliques(tree, size=5), key=sum))
+    graph = generate_graph()
+    return sum(min(find_cliques(graph, size=5), key=sum))
 
 if __name__ == "__main__":
     solve()

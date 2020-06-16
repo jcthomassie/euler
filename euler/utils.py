@@ -16,13 +16,13 @@ def print_result(func: Callable, verbose=False) -> Callable:
     """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        t0 = time.time()
+        t_0 = time.perf_counter()
         res = func(*args, **kwargs)
-        t1 = time.time()
+        t_1 = time.perf_counter()
         # Print timing information
         params = args + tuple(f"{k}={v}" for k, v in kwargs.items())
-        f_repr = f"{func.__name__}({','.join(params)})"
-        print(f"[{f_repr} = {res}] ({t1 - t0:.3f} sec)")
+        f_repr = f"{func.__module__}.{func.__name__}({','.join(params)})"
+        print(f"[{t_1 - t_0:.5f} sec]\t", f_repr, "\t=", res)
         # Copy result to clipboard
         pyperclip.copy(str(res))
         return res

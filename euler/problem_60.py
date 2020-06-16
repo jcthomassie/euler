@@ -21,30 +21,27 @@ P_MAX = 100000000
 P_MASK = prime_mask(P_MAX)
 
 
-def sub_primes(n: int):
-    """
-    Yield all pairs of 'substring' primes for the input integer.
-    """
-    s = str(n)
-    for i in range(1, len(s)):
-        if "0" in (s[0], s[i]):
-            continue
-        a = int(s[:i])
-        b = int(s[i:])
-        c = int(s[i:] + s[:i])
-        if P_MASK[a] and P_MASK[b] and P_MASK[c]:
-            yield a, b
-            yield from sub_primes(a)
-            yield from sub_primes(b)
-
 def generate_graph():
     """
     Build graph of all pairs of 'substring' primes in the prime table.
     """
     graph = defaultdict(set)
-    for n in range(11, P_MAX, 2):
-        if P_MASK[n]:
-            for a, b in sub_primes(n):
+    concats = set(( # set of possible concatenated primes
+        str(n) for n in range(11, P_MAX, 2)
+        if P_MASK[n]
+    ))
+    for c_1 in concats:
+        for i in range(1, len(c_1)):
+            if "0" in (c_1[0], c_1[i]):
+                continue
+            # Check reverse order
+            c_2 = c_1[i:] + c_1[:i]
+            if c_2 not in concats:
+                continue
+            # Check substring primes
+            a = int(c_1[:i])
+            b = int(c_1[i:])
+            if P_MASK[a] and P_MASK[b]:
                 graph[a].add(b)
                 graph[b].add(a)
     return graph

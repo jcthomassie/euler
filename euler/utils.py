@@ -3,8 +3,9 @@
 Shared utility functions.
 """
 import functools
+import math
 import time
-from typing import Callable, List
+from typing import Callable, List, Tuple, Generator
 
 import numpy as np
 import pyperclip
@@ -28,6 +29,9 @@ def print_result(func: Callable, verbose=False) -> Callable:
         return res
     return wrapper
 
+###############################################################################
+# PRIMES
+###############################################################################
 def prime_mask(n: int):
     """
     Generates a boolean array of length N, where each index is True if that
@@ -53,8 +57,13 @@ def prime_list(n: int) -> List[int]:
         return []
     return [2, *(i for i in range(3, n, 2) if mask[i])]
 
+###############################################################################
+# COPRIMES
+##############################################################################
 def _coprime_children(m, n, stop):
-    # https://en.wikipedia.org/wiki/Coprime_integers#Generating_all_coprime_pairs
+    """
+    https://en.wikipedia.org/wiki/Coprime_integers#Generating_all_coprime_pairs
+    """
     if m <= stop:
         yield (m, n)
         yield from _coprime_children(2 * m - n, m, stop)
@@ -83,3 +92,53 @@ def coprimes(stop: int) -> List[int]:
         *_coprime_children(3, 1, stop),
         *_coprime_children(2, 1, stop),
     ]
+
+###############################################################################
+# TRIANGLES
+###############################################################################
+Triangle = Tuple[int, int, int]
+TriangleGenerator = Generator[Triangle, None, None]
+
+def euclid(m: int, n: int) -> Triangle:
+    """
+    Return a pythagorean triple (a, b, c) computed using Euclid's
+    formula.
+
+    For proper behavior, inputs must satisfy: ``m > n >= 1``
+
+    https://en.wikipedia.org/wiki/Formulas_for_generating_Pythagorean_triples
+    """
+    m2 = m ** 2
+    n2 = n ** 2
+    return (
+        m2 - n2,   # A
+        2 * m * n, # B
+        m2 + n2,   # C
+    )
+
+def generate_primitive_triples(stop: int) -> TriangleGenerator:
+    """
+    Generates all primitive pythagorean triples (a, b, c) where c (the hypotenuse)
+    does not exceed ``stop``.
+
+    NOTE: stop handling is buggy; there may be extra triples.
+    """
+    # c <= stop
+    # c = m^2 + n^2
+    # c > m^2
+    m_max = math.ceil(math.sqrt(stop))
+    for m, n in _coprime_children(2, 1, m_max):
+        yield euclid(m, n)
+
+def generate_triples(stop: int) -> TriangleGenerator:
+    """
+    Generates all pythagorean triples (a, b, c) where c (the hypotenuse) does
+    not exceed ``stop``.
+    """
+    for primitive in generate_primitive_triples(stop):
+        yield primitive
+        for i in range(2, stop):
+            triple = tuple((i * side for side in primitive))
+            if triple[-1] > stop:
+                break
+            yield triple

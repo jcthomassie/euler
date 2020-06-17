@@ -4,7 +4,7 @@ Shared utility functions.
 """
 import functools
 import time
-from typing import Callable
+from typing import Callable, List
 
 import numpy as np
 import pyperclip
@@ -28,7 +28,7 @@ def print_result(func: Callable, verbose=False) -> Callable:
         return res
     return wrapper
 
-def prime_mask(n):
+def prime_mask(n: int):
     """
     Generates a boolean array of length N, where each index is True if that
     index is prime.
@@ -44,7 +44,7 @@ def prime_mask(n):
                 composite += i
     return primes
 
-def prime_list(n):
+def prime_list(n: int) -> List[int]:
     """
     Generates a list of all primes below the input number.
     """
@@ -52,3 +52,34 @@ def prime_list(n):
     if n <= 2:
         return []
     return [2, *(i for i in range(3, n, 2) if mask[i])]
+
+def _coprime_children(m, n, stop):
+    # https://en.wikipedia.org/wiki/Coprime_integers#Generating_all_coprime_pairs
+    if m <= stop:
+        yield (m, n)
+        yield from _coprime_children(2 * m - n, m, stop)
+        yield from _coprime_children(2 * m + n, m, stop)
+        yield from _coprime_children(m + 2 * n, n, stop)
+
+def coprimes_odd_odd(stop: int) -> List[int]:
+    """
+    Returns list of all coprime pairs (m, n) where ``stop`` >= m > n
+    and both m and n are odd.
+    """
+    return list(_coprime_children(3, 1, stop))
+
+def coprimes_odd_even(stop: int) -> List[int]:
+    """
+    Returns list of all coprime pairs (m, n) where ``stop`` >= m > n
+    and one of each is even and the other is odd.
+    """
+    return list(_coprime_children(2, 1, stop))
+
+def coprimes(stop: int) -> List[int]:
+    """
+    Returns list of all coprime pairs (m, n) where ``stop`` >= m > n.
+    """
+    return [
+        *_coprime_children(3, 1, stop),
+        *_coprime_children(2, 1, stop),
+    ]

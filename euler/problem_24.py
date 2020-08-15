@@ -28,7 +28,7 @@ def factorial(n: int) -> int:
 
 
 @print_result
-def solve() -> str:
+def solve() -> int:
     target = 1000000
     total = 0
     digits = list(range(10))
@@ -39,7 +39,7 @@ def solve() -> str:
             m += 1
             total += factorial(n)
         result += str(digits.pop(m - 1))
-    return result
+    return int(result)
 
 
 if __name__ == "__main__":

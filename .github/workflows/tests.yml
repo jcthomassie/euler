@@ -42,4 +42,10 @@ jobs:
     - name: Type check [mypy]
       run: mypy .
     - name: Unit tests [pytest]
-      run: pytest
+      run: pytest --cov-report=xml --cov=euler
+    - name: Upload codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+        name: codecov-umbrella

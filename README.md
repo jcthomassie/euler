@@ -1,6 +1,7 @@
 # euler
 
 [![tests](https://github.com/jcthomassie/euler/workflows/tests/badge.svg)](https://github.com/jcthomassie/euler/actions)
+[![codecov](https://codecov.io/gh/jcthomassie/euler/branch/master/graph/badge.svg)](https://codecov.io/gh/jcthomassie/euler)
 
 Collection of solutions to [Project Euler](https://projecteuler.net/) problems.
 Each module contains a solution to a single problem. Any necessary data for

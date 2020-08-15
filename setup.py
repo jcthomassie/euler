@@ -25,7 +25,7 @@ REQUIRES = [
 ]
 EXTRAS_REQUIRE = {
     "dev": ["black", "isort", "flake8", "mypy"],
-    "tests": ["pytest"],
+    "tests": ["pytest", "pytest-cov"],
 }
 EXTRAS_REQUIRE["dev"] += EXTRAS_REQUIRE["tests"]
 

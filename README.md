@@ -1,5 +1,7 @@
 # euler
 
+[![tests](https://github.com/jcthomassie/euler/workflows/tests/badge.svg)](https://github.com/jcthomassie/euler/actions)
+
 Collection of solutions to [Project Euler](https://projecteuler.net/) problems.
 Each module contains a solution to a single problem. Any necessary data for
 solutions is included in the euler/data directory.

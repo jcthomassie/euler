@@ -19,6 +19,7 @@ REQUIRES_PYTHON = ">=3.6"
 REQUIRES = [
     "numpy",
     "pyperclip",
+    "requests",
     "beautifulsoup4",
 ]
 EXTRAS_REQUIRE = {

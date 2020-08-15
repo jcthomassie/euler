@@ -24,6 +24,7 @@ right and down in matrix.txt, a 31K text file containing an 80 by 80 matrix.
 import math
 import os
 from collections import defaultdict
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -41,10 +42,8 @@ TEST = np.array(
 )
 
 
-def scrape_array(path: str):
-    """
-    Scrape array from text file.
-    """
+def scrape_array(path: str) -> np.array:
+    """Scrape array from text file."""
     with open(path, "r") as h:
         matrix = []
         for line in h:
@@ -52,11 +51,17 @@ def scrape_array(path: str):
     return np.array(matrix)
 
 
+Node = Tuple[int, int]
+
+
 def a_star(
-    array, start=None, end=None, neighbors=None,
-):
+    array: np.array,
+    start: Optional[Node] = None,
+    end: Optional[Node] = None,
+    neighbors: Optional[Tuple[Node, ...]] = None,
+) -> List[int]:
     """
-    Find the optimal path sum through the input array of node weights using the
+    Find the optimal path through the input array of node weights using the
     A* algorithm.
     """
     if start is None:
@@ -67,7 +72,7 @@ def a_star(
         neighbors = ((1, 0), (0, 1), (-1, 0), (0, -1))
 
     candidates = set([start])
-    parents = dict()
+    parents: Dict[Node, Node] = dict()
     # Best known scores
     scores = defaultdict(lambda: math.inf)
     scores[start] = array[start[0], start[1]]
@@ -95,10 +100,11 @@ def a_star(
                 parents[neighbor] = node
                 scores[neighbor] = score
                 candidates.add(neighbor)
+    raise RuntimeError("Failed to find path")
 
 
 @print_result
-def solve():
+def solve() -> int:
     return sum(
         a_star(
             scrape_array(os.path.join(DATA_DIR, "p081_matrix.txt")),

@@ -86,6 +86,7 @@ digit modal string.
 import enum
 from collections import defaultdict
 from itertools import combinations_with_replacement
+from typing import DefaultDict, Dict
 
 from .utils import print_result
 
@@ -104,7 +105,7 @@ class Square(enum.IntEnum):
     # fmt: on
 
     @property
-    def group(self):
+    def group(self) -> str:
         return self.name.strip("1234")
 
 
@@ -145,8 +146,8 @@ def find_next(start_sq: Square, group: str) -> Square:
 ###############################################################################
 # PROBABILITIES
 ###############################################################################
-def _get_roll_weights(sides=6):
-    weights = defaultdict(lambda: 0)
+def _get_roll_weights(sides: int = 6) -> DefaultDict[int, float]:
+    weights: DefaultDict[int, float] = defaultdict(lambda: 0)
     rolls = list(combinations_with_replacement(range(1, sides + 1), 2))
     p_roll = 1 / len(rolls)
     for roll in rolls:
@@ -155,7 +156,7 @@ def _get_roll_weights(sides=6):
     return weights
 
 
-def _get_chance_weights(ch_sq: Square):
+def _get_chance_weights(ch_sq: Square) -> Dict[int, float]:
     cards = 16
     direct = [GO, JAIL, C1, E3, H2, R1]
     return dict(
@@ -168,7 +169,7 @@ def _get_chance_weights(ch_sq: Square):
     )
 
 
-def _get_community_chest_weights():
+def _get_community_chest_weights() -> Dict[int, float]:
     cards = 16
     direct = [GO, JAIL]
     return dict((sq, 1 / cards) for sq in direct)
@@ -177,8 +178,8 @@ def _get_community_chest_weights():
 ROLL_WEIGHTS = _get_roll_weights()
 
 
-def _get_move_weights(sq: Square, sides=6):
-    weights = defaultdict(lambda: 0)
+def _get_move_weights(sq: Square, sides: int = 6) -> DefaultDict[int, float]:
+    weights: DefaultDict[int, float] = defaultdict(lambda: 0)
     weights[JAIL] = p_j = (1 / sides) ** 3
     for spaces, weight in ROLL_WEIGHTS.items():
         # Handle doubles
@@ -188,8 +189,8 @@ def _get_move_weights(sq: Square, sides=6):
     return weights
 
 
-def generate_all_weights():
-    weights = dict()
+def generate_all_weights() -> Dict[int, Dict[int, float]]:
+    weights: Dict[int, Dict[int, float]] = dict()
     for sq in BOARD:
         w_sq = weights[sq] = dict()
         if sq is G2J:
@@ -200,7 +201,7 @@ def generate_all_weights():
             else:
                 draws = _get_community_chest_weights()
             rolls = _get_move_weights(sq)
-            p_roll = 1 - sum(draws.values())
+            p_roll = 1 - sum(draws.values())  # type: ignore
             for t_sq in set((*draws.keys(), *rolls.keys())):
                 w_sq[t_sq] = draws.get(t_sq, 0)
                 w_sq[t_sq] += rolls.get(t_sq, 0) * p_roll
@@ -209,16 +210,17 @@ def generate_all_weights():
     return weights
 
 
-def print_prob(w):
+def print_prob(w: Dict[int, float]) -> None:
     for sq, p in sorted(w.items(), key=lambda t: t[-1]):
         print(sq, f"\t{p * 100:6.3f}%")
     print("TOTAL", f"\t{sum(w.values()) * 100:6.3f}%")
 
 
 @print_result
-def solve():
+def solve() -> str:
     w = generate_all_weights()
     print_prob(w[G1])
+    raise NotImplementedError()
 
 
 if __name__ == "__main__":

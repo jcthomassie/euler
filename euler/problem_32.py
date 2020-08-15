@@ -23,7 +23,7 @@ from .utils import print_result
 
 
 @print_result
-def solve():
+def solve() -> int:
     products = set()
     l_p = 4  # only works for products of length 4
     for perm in itertools.permutations("123456789"):

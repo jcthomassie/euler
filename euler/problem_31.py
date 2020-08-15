@@ -15,10 +15,12 @@ It is possible to make £2 in the following way:
 
 How many different ways can £2 be made using any number of coins?
 """
+from typing import List
+
 from .utils import print_result
 
 
-def make_change(target, values):
+def make_change(target: int, values: List[int]) -> int:
     count = 0
     while values:
         v = values.pop()
@@ -33,7 +35,7 @@ def make_change(target, values):
 
 
 @print_result
-def solve():
+def solve() -> int:
     return make_change(200, [1, 2, 5, 10, 20, 50, 100, 200])
 
 

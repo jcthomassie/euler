@@ -22,7 +22,7 @@ from .utils import print_result
 
 
 @print_result
-def solve():
+def solve() -> int:
     last = 1001 * 1001
     total = 1
     step = 2

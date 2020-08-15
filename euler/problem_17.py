@@ -60,7 +60,7 @@ FOURTH = {k: v + len("thousand") for k, v in FIRST.items()}
 AND = len("and")
 
 
-def count_letters(n):
+def count_letters(n: int) -> int:
     digits = [int(s) for s in f"{n:04d}"]
     result = TEENS.get(int(f"{digits[-2]}{digits[-1]}"), 0)
     if not result:
@@ -74,7 +74,7 @@ def count_letters(n):
 
 
 @print_result
-def solve():
+def solve() -> int:
     num = 1000
     return sum(count_letters(n) for n in range(1, num + 1))
 

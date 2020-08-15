@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Implements programmatic scraping of problems from https://projecteuler.net
-and creation of template python modules for problems.
-"""
+"""Implements programmatic scraping of problems from https://projecteuler.net"""
 import os
 import textwrap
+from typing import List, Optional
 
 import requests
 from bs4 import BeautifulSoup
@@ -35,29 +33,27 @@ class Problem:
     problem listed on https://projecteuler.net/archive
     """
 
-    def __init__(self, number: int):
+    def __init__(self, number: int) -> None:
         self.number = number
         self._soup = None
 
     @property
-    def source_url(self):
+    def source_url(self) -> str:
         return _URL_TEMPLATE.format(self.number)
 
     @property
-    def module_path(self):
+    def module_path(self) -> str:
         return _PATH_TEMPLATE.format(self.number)
 
     @property
-    def soup(self):
+    def soup(self) -> BeautifulSoup:
         if self._soup is None:
             response = requests.get(self.source_url)
             self._soup = BeautifulSoup(response.text, "html.parser")
         return self._soup
 
-    def get_data_links(self):
-        """
-        Get a list of urls for associated problem data.
-        """
+    def get_data_links(self) -> List[str]:
+        """Get urls for associated problem data."""
         links = []
         for link in self.soup.find_all("a"):
             href = link.get("href")
@@ -66,23 +62,19 @@ class Problem:
         return links
 
     def get_title(self) -> str:
-        """
-        Get the problem title.
-        """
+        """Get the problem title."""
         tag = self.soup.find("h2")
-        return tag.string
+        return tag.string  # type: ignore
 
     def get_statement(self) -> str:
-        """
-        Get the problem statement.
-        """
+        """Get the problem statement."""
         tag = self.soup.select(".problem_content")[0]
-        return tag.get_text()
+        return tag.get_text()  # type: ignore
 
     def module_docstring(self) -> str:
-        """
-        Assemble the module docstring. Includes problem title and statement
-        formatted in a reasonable manner.
+        """Assemble the module docstring.
+
+        Includes problem title and statement formatted in a reasonable manner.
         """
         lines = []
         lines.append(self.get_title())
@@ -100,22 +92,24 @@ class Problem:
             )
         return "\n".join(lines)
 
-    def create_module(self):
-        """
-        Create a python module for the problem, using the standard module
-        template. Does nothing if the module already exists.
+    def create_module(self) -> Optional[str]:
+        """Create a python module for the problem.
+
+        Does nothing if the module already exists.
         """
         if os.path.isfile(self.module_path):
-            return
+            return None
         with open(self.module_path, "w", encoding="utf-8") as h:
             h.write(_FILE_TEMPLATE.format(self.module_docstring()))
             return self.module_path
 
-    def download_files(self):
-        """
-        Download any associated data files for the problem. Skips any files
-        that have already been downloaded. Returns a list of files that were
-        downloaded.
+    def download_files(self) -> List[str]:
+        """Download any associated data files for the problem.
+
+        Skips any files that have already been downloaded.
+
+        Returns:
+            Paths to files that were downloaded.
         """
         downloads = []
         for url in self.get_data_links():
@@ -130,10 +124,11 @@ class Problem:
             downloads.append(path)
         return downloads
 
-    def scrape(self):
-        """
-        Scrape problem data, create python module, and copy any associated
-        files. Returns a list of files that were created.
+    def scrape(self) -> List[str]:
+        """Scrape problem data, create python module, and copy any associated files.
+
+        Returns:
+            Paths to files that were created.
         """
         paths = []
         module = self.create_module()

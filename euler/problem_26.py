@@ -26,12 +26,12 @@ its decimal fraction part.
 from .utils import print_result
 
 
-def decimal_cycle(d):
+def decimal_cycle(d: int) -> int:
     raise NotImplementedError()
 
 
 @print_result
-def solve():
+def solve() -> int:
     max_value = 0
     max_cycle = 0
     for d in range(2, 1000):

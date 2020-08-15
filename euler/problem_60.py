@@ -14,6 +14,7 @@ Find the lowest sum for a set of five primes for which any two primes
 concatenate to produce another prime.
 """
 from collections import defaultdict
+from typing import DefaultDict, Iterator, Set
 
 from .utils import prime_mask, print_result
 
@@ -21,10 +22,8 @@ P_MAX = 100000000
 P_MASK = prime_mask(P_MAX)
 
 
-def generate_graph():
-    """
-    Build graph of all pairs of 'substring' primes in the prime table.
-    """
+def generate_graph() -> DefaultDict[int, Set[int]]:
+    """Build graph of pairs of 'substring' primes in the prime table."""
     graph = defaultdict(set)
     concats = set(
         (  # set of possible concatenated primes
@@ -48,12 +47,12 @@ def generate_graph():
     return graph
 
 
-def find_cliques(graph, size=5):
-    """
-    Find all cliques of the specified size in the input graph.
-    """
+def find_cliques(
+    graph: DefaultDict[int, Set[int]], size: int = 5
+) -> Iterator[Set[int]]:
+    """Find all cliques of the specified size in the input graph."""
 
-    def len_neighbors(n):
+    def len_neighbors(n: int) -> int:
         return len(graph[n])
 
     # largest vertex -> smallest vertex
@@ -70,7 +69,7 @@ def find_cliques(graph, size=5):
 
 
 @print_result
-def solve():
+def solve() -> int:
     graph = generate_graph()
     return sum(min(find_cliques(graph, size=5), key=sum))
 

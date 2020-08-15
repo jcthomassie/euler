@@ -19,16 +19,14 @@ from .utils import print_result
 
 @functools.lru_cache(1000000, typed=True)
 def fibonacci(n: int) -> int:
-    """
-    Compute the N-th fibonacci number.
-    """
+    """Compute the N-th fibonacci number."""
     if n in (0, 1):
         return 1
     return fibonacci(n - 1) + fibonacci(n - 2)
 
 
 @print_result
-def solve():
+def solve() -> int:
     total = 0
     n = 2
     while True:

@@ -20,17 +20,15 @@ from .utils import print_result
 
 
 @functools.lru_cache(10, typed=True)
-def factorial(n):
-    """
-    Compute the factorial of natural number n.
-    """
+def factorial(n: int) -> int:
+    """Compute the factorial of natural number n."""
     if n in (1, 0):
         return 1
     return n * factorial(n - 1)
 
 
 @print_result
-def solve():
+def solve() -> str:
     target = 1000000
     total = 0
     digits = list(range(10))

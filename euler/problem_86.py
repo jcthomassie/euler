@@ -22,36 +22,38 @@ Find the least value of M such that the number of solutions first exceeds one
 million.
 """
 import math
+from typing import Iterator, Tuple
 
 from .utils import generate_triples, print_result
 
 
-def min_cuboid_path(a: int, b: int, c: int):
+def min_cuboid_path(a: int, b: int, c: int) -> float:
     return math.sqrt(
         min(a ** 2 + (b + c) ** 2, b ** 2 + (a + c) ** 2, c ** 2 + (a + b) ** 2,)
     )
 
 
-def generate_candidates(stop: int):
+def generate_candidates(stop: int) -> Iterator[Tuple[int, int, int]]:
     for leg_1, leg_2, _ in generate_triples(stop):
         for a in range(1, leg_1 // 2 + 1):
             b = leg_1 - a
             c = leg_2
-            yield tuple(sorted((a, b, c)))
+            yield tuple(sorted((a, b, c)))  # type: ignore
         for a in range(1, leg_2 // 2 + 1):
             b = leg_2 - a
             c = leg_1
-            yield tuple(sorted((a, b, c)))
+            yield tuple(sorted((a, b, c)))  # type: ignore
 
 
 @print_result
-def solve():
+def solve() -> int:
     target = 2_000  # 1_000_000
     for a, b, c in sorted(set(generate_candidates(target)), key=max):
         if min_cuboid_path(a, b, c).is_integer():
             target -= 1
         if not target:
             return max(a, b, c)
+    raise RuntimeError("Failed to find solution")
 
 
 if __name__ == "__main__":

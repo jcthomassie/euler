@@ -32,7 +32,7 @@ from .utils import generate_triples, print_result
 
 
 @print_result
-def solve():
+def solve() -> int:
     length = 1_500_000
     perims = collections.Counter(
         (sum(sides) for sides in generate_triples(math.ceil(length / 2)))

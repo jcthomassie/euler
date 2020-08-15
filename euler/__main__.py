@@ -5,23 +5,27 @@ Run any of the implemented problem solutions via commandline.
 import argparse
 import importlib
 import sys
+from typing import List, Optional
 
 from .scraper import Problem
 
 
-def _solve(args):
+def _solve(args: argparse.Namespace) -> None:
     for number in args.problems:
         solution = importlib.import_module(f"euler.problem_{number}")
-        solution.solve()
+        solve = getattr(solution, "solve", None)
+        if callable(solve):
+            solve()
+        raise AttributeError(f"Solution {solution!r} does not provide a solve method")
 
 
-def _scrape(args):
+def _scrape(args: argparse.Namespace) -> None:
     for number in args.problems:
         problem = Problem(number)
         problem.scrape()
 
 
-def main(args=None):
+def main(args: Optional[List[str]] = None) -> int:
     if args is None:
         args = sys.argv[1:]
     # Top-level parser
@@ -52,6 +56,7 @@ def main(args=None):
     # Execution
     _args = parser.parse_args(args)
     _args.func(_args)
+    return 0
 
 
 if __name__ == "__main__":

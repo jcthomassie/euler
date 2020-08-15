@@ -50,7 +50,7 @@ def is_lychrel(n: int) -> bool:
 
 
 @print_result
-def solve():
+def solve() -> int:
     return len([n for n in range(10_000) if is_lychrel(n)])
 
 

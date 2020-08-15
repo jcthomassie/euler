@@ -16,28 +16,26 @@ one in value, and containing two digits in the numerator and denominator.
 If the product of these four fractions is given in its lowest common terms, find
 the value of the denominator.
 """
+from typing import Tuple
+
 from .utils import print_result
 
 
-def gcd(a, b):
-    """
-    Returns the GCD (Greatest Common Divisor) of integers a and b.
-    """
+def gcd(a: int, b: int) -> int:
+    """Get the GCD (Greatest Common Divisor) of integers a and b."""
     while b:
         a, b = b, a % b
     return a
 
 
-def simplify(a, b):
-    """
-    Simplifies the fraction a / b by dividing out the GCD.
-    """
+def simplify(a: int, b: int) -> Tuple[int, int]:
+    """Simplify the fraction a / b by dividing out the GCD."""
     d = gcd(a, b)
     return a // d, b // d
 
 
 @print_result
-def solve():
+def solve() -> int:
     p_a = 1
     p_b = 1
     # Get 2-digit numbers that are not multiples of 10

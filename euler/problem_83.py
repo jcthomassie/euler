@@ -32,8 +32,8 @@ from .utils import print_result
 
 
 @print_result
-def solve():
-    return sum(a_star(scrape_array(os.path.join(DATA_DIR, "p083_matrix.txt")),))
+def solve() -> int:
+    return sum(a_star(scrape_array(os.path.join(DATA_DIR, "p083_matrix.txt"))))
 
 
 if __name__ == "__main__":

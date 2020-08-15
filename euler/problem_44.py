@@ -17,12 +17,13 @@ difference are pentagonal and D = |Pk − Pj| is minimised; what is the value of
 D?
 """
 import math
+from typing import List
 
 from .problem_45 import generate_pentagonals
 from .utils import print_result
 
 
-def is_pentagonal(p):
+def is_pentagonal(p: int) -> int:
     """
     P = n * (3n - 1) / 2
 
@@ -35,13 +36,14 @@ def is_pentagonal(p):
 
 
 @print_result
-def solve():
-    pentagonals = []
+def solve() -> int:
+    pentagonals: List[int] = []
     for p_j in generate_pentagonals(1):
         for p_k in pentagonals:
             if is_pentagonal(p_j + p_k) and is_pentagonal(p_j - p_k):
                 return p_j - p_k
         pentagonals.append(p_j)
+    raise RuntimeError("Failed to find solution")
 
 
 if __name__ == "__main__":

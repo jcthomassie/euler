@@ -15,7 +15,7 @@ from .problem_24 import factorial
 from .utils import print_result
 
 
-def get_upper_bound():
+def get_upper_bound() -> int:
     """
     An easy upper bound for the largest number that is the sum of the factorial
     of its digits can be found using the following logic:
@@ -38,7 +38,7 @@ BOUND = get_upper_bound()
 
 
 @print_result
-def solve():
+def solve() -> int:
     digit_factorials = {str(d): factorial(d) for d in range(10)}
     total = 0
     for n in range(10, BOUND):

@@ -19,11 +19,8 @@ import numpy as np
 from .utils import print_result
 
 
-def divisor_sums(n):
-    """
-    Generate a flat array of the sums of the proper divisors of all numbers less
-    than n.
-    """
+def divisor_sums(n: int) -> np.array:
+    """Generate a flat array of sums of proper divisors of numbers less than n."""
     sums = np.zeros(n, dtype=int)
     for i in range(1, n):
         j = 2 * i
@@ -34,7 +31,7 @@ def divisor_sums(n):
 
 
 @print_result
-def solve():
+def solve() -> int:
     n = 10000
     sums = divisor_sums(n)
     total = 0

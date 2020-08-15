@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
-"""
-Shared utility functions.
-"""
+"""Shared utility functions."""
 import functools
 import math
 import time
-from typing import Callable, Generator, List, Tuple
+from typing import Any, Callable, Generator, Iterator, List, Tuple, Union
 
 import numpy as np
 import pyperclip
 
+SolutionType = Union[int, str]
 
-def print_result(func: Callable, verbose=False) -> Callable:
+
+def print_result(func: Callable[..., SolutionType], verbose: bool = False) -> Callable:
     """
     Time the function call; print the call syntax, runtime, and result after
     call finishes before returning the result.
     """
 
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> SolutionType:
         t_0 = time.perf_counter()
         res = func(*args, **kwargs)
         t_1 = time.perf_counter()
@@ -36,11 +36,8 @@ def print_result(func: Callable, verbose=False) -> Callable:
 ###############################################################################
 # PRIMES
 ###############################################################################
-def prime_mask(n: int):
-    """
-    Generates a boolean array of length N, where each index is True if that
-    index is prime.
-    """
+def prime_mask(n: int) -> np.array:
+    """Generate boolean array of length N, where prime indices are True."""
     primes = np.ones(n, dtype=bool)
     primes[:2] = False
     for i in range(2, n):
@@ -54,9 +51,7 @@ def prime_mask(n: int):
 
 
 def prime_list(n: int) -> List[int]:
-    """
-    Generates a list of all primes below the input number.
-    """
+    """Generate a list of all primes below the input number."""
     mask = prime_mask(n)
     if n <= 2:
         return []
@@ -66,7 +61,7 @@ def prime_list(n: int) -> List[int]:
 ###############################################################################
 # COPRIMES
 ##############################################################################
-def _coprime_children(m, n, stop):
+def _coprime_children(m: int, n: int, stop: int) -> Iterator[Tuple[int, int]]:
     """
     https://en.wikipedia.org/wiki/Coprime_integers#Generating_all_coprime_pairs
     """
@@ -77,26 +72,18 @@ def _coprime_children(m, n, stop):
         yield from _coprime_children(m + 2 * n, n, stop)
 
 
-def coprimes_odd_odd(stop: int) -> List[int]:
-    """
-    Returns list of all coprime pairs (m, n) where ``stop`` >= m > n
-    and both m and n are odd.
-    """
+def coprimes_odd_odd(stop: int) -> List[Tuple[int, int]]:
+    """Generate all odd coprime pairs `(m, n)` where `stop >= m > n`."""
     return list(_coprime_children(3, 1, stop))
 
 
-def coprimes_odd_even(stop: int) -> List[int]:
-    """
-    Returns list of all coprime pairs (m, n) where ``stop`` >= m > n
-    and one of each is even and the other is odd.
-    """
+def coprimes_odd_even(stop: int) -> List[Tuple[int, int]]:
+    """Generate all odd, even coprime pairs `(m, n)` where `stop >= m > n`."""
     return list(_coprime_children(2, 1, stop))
 
 
-def coprimes(stop: int) -> List[int]:
-    """
-    Returns list of all coprime pairs (m, n) where ``stop`` >= m > n.
-    """
+def coprimes(stop: int) -> List[Tuple[int, int]]:
+    """Generate all coprime pairs `(m, n)` where `stop >= m > n`."""
     return [
         *_coprime_children(3, 1, stop),
         *_coprime_children(2, 1, stop),
@@ -111,11 +98,9 @@ TriangleGenerator = Generator[Triangle, None, None]
 
 
 def euclid(m: int, n: int) -> Triangle:
-    """
-    Return a pythagorean triple (a, b, c) computed using Euclid's
-    formula.
+    """Get a pythagorean triple (a, b, c) computed using Euclid's formula.
 
-    For proper behavior, inputs must satisfy: ``m > n >= 1``
+    For proper behavior, inputs must satisfy: `m > n >= 1`
 
     https://en.wikipedia.org/wiki/Formulas_for_generating_Pythagorean_triples
     """
@@ -154,4 +139,4 @@ def generate_triples(stop: int) -> TriangleGenerator:
             triple = tuple((i * side for side in primitive))
             if triple[-1] > stop:
                 break
-            yield triple
+            yield triple  # type: ignore

@@ -33,7 +33,7 @@ import functools
 from .utils import prime_mask, print_result
 
 
-def func(n, a, b):
+def func(n: int, a: int, b: int) -> int:
     return n ** 2 + a * n + b
 
 
@@ -41,11 +41,8 @@ PRIMES = prime_mask(func(1000, 1000, 1000))
 
 
 @functools.lru_cache()
-def depth(a, b):
-    """
-    Return the number of consecutive N that produce a prime
-    for func(n, a, b).
-    """
+def depth(a: int, b: int) -> int:
+    """Return the number of consecutive N that produce a prime for func(n, a, b)."""
     n = 0
     while PRIMES[func(n, a, b)]:
         n += 1
@@ -53,7 +50,7 @@ def depth(a, b):
 
 
 @print_result
-def solve():
+def solve() -> int:
     d_max = 0
     best = None
     for b in range(-999, 1001, 2):
@@ -64,6 +61,8 @@ def solve():
             if depth(a, b) > d_max:
                 best = (a, b)
                 d_max = depth(a, b)
+    if best is None:
+        raise RuntimeError("Failed to find solution")
     return best[0] * best[1]
 
 

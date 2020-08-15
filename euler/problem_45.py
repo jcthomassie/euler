@@ -15,38 +15,34 @@ It can be verified that T285 = P165 = H143 = 40755.
 
 Find the next triangle number that is also pentagonal and hexagonal.
 """
+from typing import Iterator
+
 from .utils import print_result
 
 
-def generate_triangulars(n: int):
-    """
-    Generate triangular numbers starting from the Nth triangle number.
-    """
+def generate_triangulars(n: int) -> Iterator[int]:
+    """Generate triangular numbers starting from the Nth triangle number."""
     while True:
         yield n * (n + 1) // 2
         n += 1
 
 
-def generate_pentagonals(n: int):
-    """
-    Generate pentagonal numbers starting from the Nth pentagonal number.
-    """
+def generate_pentagonals(n: int) -> Iterator[int]:
+    """Generate pentagonal numbers starting from the Nth pentagonal number."""
     while True:
         yield n * (3 * n - 1) // 2
         n += 1
 
 
-def generate_hexagonals(n: int):
-    """
-    Generate hexagonal numbers starting from the Nth hexagonal number.
-    """
+def generate_hexagonals(n: int) -> Iterator[int]:
+    """Generate hexagonal numbers starting from the Nth hexagonal number."""
     while True:
         yield n * (2 * n - 1)
         n += 1
 
 
 @print_result
-def solve():
+def solve() -> int:
     generators = {
         "t": generate_triangulars(286),
         "p": generate_pentagonals(166),

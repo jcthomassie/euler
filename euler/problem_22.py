@@ -16,28 +16,25 @@ obtain a score of 938 × 53 = 49714.
 What is the total of all the name scores in the file?
 """
 import os
+from typing import List
 
 from . import DATA_DIR
 from .utils import print_result
 
 
-def scrape_names(path: str):
-    """
-    Scrape names into a list and sort them.
-    """
+def scrape_names(path: str) -> List[str]:
+    """Scrape names into a list and sort them."""
     with open(path, "r") as h:
         return sorted(eval(next(h)))
 
 
 def name_score(name: str) -> int:
-    """
-    Get the score of the input name.
-    """
+    """Get the score of the input name."""
     return sum(ord(char) - 64 for char in name)  # 64 == ord("A") - 1
 
 
 @print_result
-def solve():
+def solve() -> int:
     path = os.path.join(DATA_DIR, "p022_names.txt")
     total = 0
     for i, name in enumerate(scrape_names(path), start=1):

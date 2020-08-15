@@ -15,16 +15,14 @@ leading zeros.)
 from .utils import print_result
 
 
-def is_palindrome(s):
-    """
-    Return True if input string is palindrome.
-    """
+def is_palindrome(s: str) -> bool:
+    """Return True if input string is palindrome."""
     h, r = divmod(len(s), 2)
     return s[:h] == s[: h + r - 1 : -1]
 
 
 @print_result
-def solve():
+def solve() -> int:
     return sum(
         n for n in range(1000000) if is_palindrome(str(n)) and is_palindrome(bin(n)[2:])
     )

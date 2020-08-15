@@ -26,8 +26,8 @@ def _solve(args: argparse.Namespace) -> None:
 
 def _scrape(args: argparse.Namespace) -> None:
     for number in args.problems:
-        problem = Problem(number)
-        problem.scrape()
+        for path in Problem(number).scrape():
+            print(f" -- Created: {path!r}")
 
 
 def _list(args: argparse.Namespace) -> None:

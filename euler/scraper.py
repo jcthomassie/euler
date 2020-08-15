@@ -11,7 +11,9 @@ _OUTDIR = os.path.dirname(__file__)
 
 _URL_TEMPLATE = "https://projecteuler.net/problem={}"
 _PATH_TEMPLATE = os.path.join(_OUTDIR, "problem_{}.py")
-_TEST_PATH_TEMPLATE = os.path.join(os.path.dirname(_OUTDIR), "tests/test_problem_{}.py")
+_TEST_PATH_TEMPLATE = os.path.join(
+    os.path.dirname(_OUTDIR), "tests", "test_problem_{}.py"
+)
 _DATA_TEMPLATE = os.path.join(_OUTDIR, "data", "{}")
 _FILE_TEMPLATE = '''# -*- coding: utf-8 -*-
 """

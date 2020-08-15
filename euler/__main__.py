@@ -4,10 +4,12 @@ Run any of the implemented problem solutions via commandline.
 """
 import argparse
 import importlib
+import pkgutil
 import sys
 from typing import List, Optional
 
-from .scraper import Problem
+import euler
+from euler.scraper import Problem
 
 
 def _solve(args: argparse.Namespace) -> None:
@@ -23,6 +25,15 @@ def _scrape(args: argparse.Namespace) -> None:
     for number in args.problems:
         problem = Problem(number)
         problem.scrape()
+
+
+def _list(args: argparse.Namespace) -> None:
+    for _, name, ispkg in pkgutil.iter_modules(path=euler.__path__):  # type: ignore
+        if not ispkg and name.startswith("problem_"):
+            if args.verbose:
+                print(name)
+            else:
+                print(name.lstrip("problem_"), end=" ")
 
 
 def main(args: Optional[List[str]] = None) -> int:
@@ -52,6 +63,12 @@ def main(args: Optional[List[str]] = None) -> int:
         "problems", type=int, nargs="+", help="problem numbers to scrape",
     )
     parser_scrape.set_defaults(func=_scrape)
+
+    # List parser
+    parser_list = subparsers.add_parser(
+        "list", help="list information about solution modules",
+    )
+    parser_list.set_defaults(func=_list)
 
     # Execution
     _args = parser.parse_args(args)

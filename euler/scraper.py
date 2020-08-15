@@ -30,27 +30,13 @@ def solve() -> int:
 if __name__ == "__main__":
     solve()
 '''
-_TEST_FILE_TEMPLATE = """import warnings
-
-import pytest
+_TEST_FILE_TEMPLATE = """import pytest
 
 problem = pytest.importorskip("euler.problem_{}")
 
-SOLUTION = None
 
-
-def test_solution():
-    # Compute solution
-    try:
-        solution = problem.solve()
-    except NotImplementedError:
-        warnings.warn("Solution is not yet implemented")
-        return
-    # Validate solution
-    if SOLUTION is None:
-        warnings.warn("Correct solution is unknown")
-        return
-    assert solution == SOLUTION
+def test_solution(validate_solution):
+    validate_solution(problem, answer=None)
 """
 
 

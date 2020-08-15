@@ -19,18 +19,21 @@ $ pip install -r requirements.txt
 $ pip install -e .[dev]
 ```
 
+**Note**: The solve function automatically copies the solution value to your clipboard using [pyperclip](https://pypi.org/project/pyperclip/). If you are on Linux, [xclip](http://manpages.ubuntu.com/manpages/xenial/man1/xclip.1.html) is required for this functionality to work.
+
 ## Usage
 
-After installing, the `euler` entry point will be added.
+Installing the package adds the `euler` entry point.
 
-To solve an existing problem:
+To solve already completed problems:
 
 ```console
-$ euler solve 45
-[0.00002 sec]    euler.problem_2.solve()        = 4613732
+$ euler solve 45 54
+[0.08013 sec]    euler.problem_45.solve()       = 1533776805
+[0.04725 sec]    euler.problem_54.solve()       = 376
 ```
 
-To scrape any missing data for a problem:
+To scrape any missing data for problems:
 
 ```console
 $ euler scrape 133

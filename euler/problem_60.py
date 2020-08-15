@@ -19,15 +19,15 @@ from typing import DefaultDict, Iterator, Set
 from .utils import prime_mask, print_result
 
 P_MAX = 100000000
-P_MASK = prime_mask(P_MAX)
 
 
 def generate_graph() -> DefaultDict[int, Set[int]]:
     """Build graph of pairs of 'substring' primes in the prime table."""
+    mask = prime_mask(P_MAX)
     graph = defaultdict(set)
     concats = set(
         (  # set of possible concatenated primes
-            str(n) for n in range(11, P_MAX, 2) if P_MASK[n]
+            str(n) for n in range(11, P_MAX, 2) if mask[n]
         )
     )
     for c_1 in concats:
@@ -41,7 +41,7 @@ def generate_graph() -> DefaultDict[int, Set[int]]:
             # Check substring primes
             a = int(c_1[:i])
             b = int(c_1[i:])
-            if P_MASK[a] and P_MASK[b]:
+            if mask[a] and mask[b]:
                 graph[a].add(b)
                 graph[b].add(a)
     return graph

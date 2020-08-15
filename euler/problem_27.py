@@ -30,6 +30,8 @@ starting with n = 0.
 """
 import functools
 
+import numpy as np
+
 from .utils import prime_mask, print_result
 
 
@@ -37,14 +39,16 @@ def func(n: int, a: int, b: int) -> int:
     return n ** 2 + a * n + b
 
 
-PRIMES = prime_mask(func(1000, 1000, 1000))
+@functools.lru_cache
+def primes() -> np.array:
+    return prime_mask(func(1000, 1000, 1000))
 
 
 @functools.lru_cache()
 def depth(a: int, b: int) -> int:
     """Return the number of consecutive N that produce a prime for func(n, a, b)."""
     n = 0
-    while PRIMES[func(n, a, b)]:
+    while primes()[func(n, a, b)]:
         n += 1
     return n
 
@@ -55,7 +59,7 @@ def solve() -> int:
     best = None
     for b in range(-999, 1001, 2):
         # B must be prime to satisfy f(n=0)
-        if not PRIMES[b]:
+        if not primes()[b]:
             continue
         for a in range(-999, 1000):
             if depth(a, b) > d_max:

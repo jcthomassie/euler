@@ -34,14 +34,11 @@ def get_upper_bound() -> int:
     return factorial(9) * (digits - 1)
 
 
-BOUND = get_upper_bound()
-
-
 @print_result
 def solve() -> int:
     digit_factorials = {str(d): factorial(d) for d in range(10)}
     total = 0
-    for n in range(10, BOUND):
+    for n in range(10, get_upper_bound()):
         if n == sum(digit_factorials[d] for d in str(n)):
             total += n
     return total

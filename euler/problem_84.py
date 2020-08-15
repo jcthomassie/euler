@@ -84,37 +84,44 @@ If, instead of using two 6-sided dice, two 4-sided dice are used, find the six-
 digit modal string.
 """
 import enum
-import random
-
-from itertools import combinations_with_replacement
 from collections import defaultdict
+from itertools import combinations_with_replacement
+
 from .utils import print_result
+
 
 ###############################################################################
 # SQUARE/BOARD DEFINITIONS
 ###############################################################################
 class Square(enum.IntEnum):
+    # fmt: off
     [
         GO, A1, CC1, A2, T1, R1, B1, CH1, B2, B3,
         JAIL, C1, U1, C2, C3, R2, D1, CC2, D2, D3,
         FP, E1, CH2, E2, E3, R3, F1, F2, U2, F3,
         G2J, G1, G2, CC3, G3, R4, CH3, H1, T2, H2,
     ] = range(40)
+    # fmt: on
 
     @property
     def group(self):
         return self.name.strip("1234")
 
+
 # List of all squares in order
+# fmt: off
 BOARD = [
     GO, A1, CC1, A2, T1, R1, B1, CH1, B2, B3,
     JAIL, C1, U1, C2, C3, R2, D1, CC2, D2, D3,
     FP, E1, CH2, E2, E3, R3, F1, F2, U2, F3,
     G2J, G1, G2, CC3, G3, R4, CH3, H1, T2, H2,
 ] = list(Square)
+# fmt: on
+
 
 # List of square types in order
 BOARD_TYPES = [sq.group for sq in BOARD]
+
 
 ###############################################################################
 # MOVE FUNCTIONS
@@ -125,6 +132,7 @@ def move(start_sq: Square, spaces: int) -> Square:
     """
     return BOARD[(start_sq + spaces) % len(BOARD)]
 
+
 def find_next(start_sq: Square, group: str) -> Square:
     """
     Find the next instance of the specified group starting at ``start_sq`` and
@@ -132,6 +140,7 @@ def find_next(start_sq: Square, group: str) -> Square:
     """
     delta = (BOARD_TYPES[start_sq:] + BOARD_TYPES[:start_sq]).index(group)
     return move(start_sq, delta)
+
 
 ###############################################################################
 # PROBABILITIES
@@ -145,22 +154,28 @@ def _get_roll_weights(sides=6):
         weights[spaces] += p_roll
     return weights
 
+
 def _get_chance_weights(ch_sq: Square):
     cards = 16
     direct = [GO, JAIL, C1, E3, H2, R1]
-    return dict((
-        (find_next(ch_sq, "R"), 2 / cards), # next railroad (x 2)
-        (find_next(ch_sq, "U"), 1 / cards), # next utility
-        (move(ch_sq, -3), 1 / cards),       # back 3 spaces
-        *((sq, 1 / cards) for sq in direct) # direct to square
-    ))
+    return dict(
+        (
+            (find_next(ch_sq, "R"), 2 / cards),  # next railroad (x 2)
+            (find_next(ch_sq, "U"), 1 / cards),  # next utility
+            (move(ch_sq, -3), 1 / cards),  # back 3 spaces
+            *((sq, 1 / cards) for sq in direct),  # direct to square
+        )
+    )
+
 
 def _get_community_chest_weights():
     cards = 16
     direct = [GO, JAIL]
     return dict((sq, 1 / cards) for sq in direct)
 
+
 ROLL_WEIGHTS = _get_roll_weights()
+
 
 def _get_move_weights(sq: Square, sides=6):
     weights = defaultdict(lambda: 0)
@@ -171,6 +186,7 @@ def _get_move_weights(sq: Square, sides=6):
             weight -= p_j / sides
         weights[move(sq, spaces)] += weight
     return weights
+
 
 def generate_all_weights():
     weights = dict()
@@ -192,15 +208,18 @@ def generate_all_weights():
             w_sq.update(_get_move_weights(sq))
     return weights
 
+
 def print_prob(w):
     for sq, p in sorted(w.items(), key=lambda t: t[-1]):
         print(sq, f"\t{p * 100:6.3f}%")
     print("TOTAL", f"\t{sum(w.values()) * 100:6.3f}%")
 
+
 @print_result
 def solve():
     w = generate_all_weights()
     print_prob(w[G1])
+
 
 if __name__ == "__main__":
     solve()

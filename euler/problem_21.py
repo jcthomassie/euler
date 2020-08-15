@@ -15,6 +15,7 @@ and 110; therefore d(220) = 284. The proper divisors of 284 are 1, 2, 4, 71 and
 Evaluate the sum of all the amicable numbers under 10000.
 """
 import numpy as np
+
 from .utils import print_result
 
 
@@ -31,6 +32,7 @@ def divisor_sums(n):
             j += i
     return sums
 
+
 @print_result
 def solve():
     n = 10000
@@ -40,6 +42,7 @@ def solve():
         if b < n and b != a and sums[b] == a:
             total += a
     return total
+
 
 if __name__ == "__main__":
     solve()

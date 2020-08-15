@@ -59,6 +59,7 @@ FOURTH = {k: v + len("thousand") for k, v in FIRST.items()}
 
 AND = len("and")
 
+
 def count_letters(n):
     digits = [int(s) for s in f"{n:04d}"]
     result = TEENS.get(int(f"{digits[-2]}{digits[-1]}"), 0)
@@ -71,10 +72,12 @@ def count_letters(n):
         result += AND
     return result
 
+
 @print_result
 def solve():
     num = 1000
     return sum(count_letters(n) for n in range(1, num + 1))
+
 
 if __name__ == "__main__":
     solve()

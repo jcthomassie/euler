@@ -25,8 +25,10 @@ its decimal fraction part.
 """
 from .utils import print_result
 
+
 def decimal_cycle(d):
     raise NotImplementedError()
+
 
 @print_result
 def solve():
@@ -38,6 +40,7 @@ def solve():
             max_value = d
             max_cycle = cycle
     return max_value
+
 
 if __name__ == "__main__":
     solve()

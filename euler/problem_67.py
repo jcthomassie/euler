@@ -29,6 +29,7 @@ from . import DATA_DIR
 from .problem_18 import max_path_sum
 from .utils import print_result
 
+
 def scrape_pyramid(path):
     """
     Scrape pyramid from text file into nested list of integers.
@@ -36,16 +37,16 @@ def scrape_pyramid(path):
     with open(path, "r") as h:
         pyramid = []
         for line in h:
-            pyramid.append([
-                int(node) for node in line.strip().split()
-            ])
+            pyramid.append([int(node) for node in line.strip().split()])
     return pyramid
+
 
 @print_result
 def solve():
     path = os.path.join(DATA_DIR, "p067_triangle.txt")
     pyramid = scrape_pyramid(path)
     return max_path_sum(pyramid)
+
 
 if __name__ == "__main__":
     solve()

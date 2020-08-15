@@ -18,21 +18,24 @@ HINT: Some products can be obtained in more than one way so be sure to only
 include it once in your sum.
 """
 import itertools
+
 from .utils import print_result
+
 
 @print_result
 def solve():
     products = set()
-    l_p = 4 # only works for products of length 4
+    l_p = 4  # only works for products of length 4
     for perm in itertools.permutations("123456789"):
         p = int("".join(perm[:l_p]))
         for l_a, l_b in ((3, 2), (4, 1)):
-            a = int("".join(perm[l_p:l_p + l_a]))
-            b = int("".join(perm[l_p + l_a:]))
+            a = int("".join(perm[l_p : l_p + l_a]))
+            b = int("".join(perm[l_p + l_a :]))
             if p == a * b:
                 products.add(p)
                 break
     return sum(products)
+
 
 if __name__ == "__main__":
     solve()

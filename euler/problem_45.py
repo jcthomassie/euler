@@ -17,6 +17,7 @@ Find the next triangle number that is also pentagonal and hexagonal.
 """
 from .utils import print_result
 
+
 def generate_triangulars(n: int):
     """
     Generate triangular numbers starting from the Nth triangle number.
@@ -24,6 +25,7 @@ def generate_triangulars(n: int):
     while True:
         yield n * (n + 1) // 2
         n += 1
+
 
 def generate_pentagonals(n: int):
     """
@@ -33,6 +35,7 @@ def generate_pentagonals(n: int):
         yield n * (3 * n - 1) // 2
         n += 1
 
+
 def generate_hexagonals(n: int):
     """
     Generate hexagonal numbers starting from the Nth hexagonal number.
@@ -41,6 +44,7 @@ def generate_hexagonals(n: int):
         yield n * (2 * n - 1)
         n += 1
 
+
 @print_result
 def solve():
     generators = {
@@ -48,14 +52,12 @@ def solve():
         "p": generate_pentagonals(166),
         "h": generate_hexagonals(144),
     }
-    values = {
-        key: next(generator)
-        for key, generator in generators.items()
-    }
+    values = {key: next(generator) for key, generator in generators.items()}
     while not values["t"] == values["p"] == values["h"]:
         smallest = min(values, key=values.get)
         values[smallest] = next(generators[smallest])
     return values["t"]
+
 
 if __name__ == "__main__":
     solve()

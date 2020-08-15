@@ -29,7 +29,7 @@ import os
 from collections import defaultdict
 
 from . import DATA_DIR
-from .problem_81 import TEST, scrape_array
+from .problem_81 import scrape_array
 from .utils import print_result
 
 
@@ -81,11 +81,11 @@ def modified_a_star(array):
                 scores[neighbor] = score
                 candidates.add(neighbor)
 
+
 @print_result
 def solve():
-    return sum(modified_a_star(
-        scrape_array(os.path.join(DATA_DIR, "p082_matrix.txt"))
-    ))
+    return sum(modified_a_star(scrape_array(os.path.join(DATA_DIR, "p082_matrix.txt"))))
+
 
 if __name__ == "__main__":
     solve()

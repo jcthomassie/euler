@@ -28,13 +28,13 @@ def scrape_names(path: str):
     with open(path, "r") as h:
         return sorted(eval(next(h)))
 
+
 def name_score(name: str) -> int:
     """
     Get the score of the input name.
     """
-    return sum( # 64 == ord("A") - 1
-        ord(char) - 64 for char in name
-    )
+    return sum(ord(char) - 64 for char in name)  # 64 == ord("A") - 1
+
 
 @print_result
 def solve():
@@ -43,6 +43,7 @@ def solve():
     for i, name in enumerate(scrape_names(path), start=1):
         total += i * name_score(name)
     return total
+
 
 if __name__ == "__main__":
     solve()

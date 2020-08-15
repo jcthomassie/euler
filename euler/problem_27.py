@@ -30,12 +30,15 @@ starting with n = 0.
 """
 import functools
 
-from .utils import print_result, prime_mask
+from .utils import prime_mask, print_result
+
 
 def func(n, a, b):
     return n ** 2 + a * n + b
 
+
 PRIMES = prime_mask(func(1000, 1000, 1000))
+
 
 @functools.lru_cache()
 def depth(a, b):
@@ -47,6 +50,7 @@ def depth(a, b):
     while PRIMES[func(n, a, b)]:
         n += 1
     return n
+
 
 @print_result
 def solve():
@@ -61,6 +65,7 @@ def solve():
                 best = (a, b)
                 d_max = depth(a, b)
     return best[0] * best[1]
+
 
 if __name__ == "__main__":
     solve()

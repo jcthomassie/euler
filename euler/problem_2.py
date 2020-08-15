@@ -13,6 +13,7 @@ By considering the terms in the Fibonacci sequence whose values do not exceed
 four million, find the sum of the even-valued terms.
 """
 import functools
+
 from .utils import print_result
 
 
@@ -25,6 +26,7 @@ def fibonacci(n: int) -> int:
         return 1
     return fibonacci(n - 1) + fibonacci(n - 2)
 
+
 @print_result
 def solve():
     total = 0
@@ -36,6 +38,7 @@ def solve():
         total += value
         n += 3
     return total
+
 
 if __name__ == "__main__":
     solve()

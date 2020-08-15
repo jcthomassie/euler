@@ -30,13 +30,16 @@ import numpy as np
 from . import DATA_DIR
 from .utils import print_result
 
-TEST = np.array([
-    [131, 673, 234, 103, 18],
-    [201, 96, 342, 965, 150],
-    [630, 803, 746, 422, 111],
-    [537, 699, 497, 121, 956],
-    [805, 732, 524, 37, 331],
-])
+TEST = np.array(
+    [
+        [131, 673, 234, 103, 18],
+        [201, 96, 342, 965, 150],
+        [630, 803, 746, 422, 111],
+        [537, 699, 497, 121, 956],
+        [805, 732, 524, 37, 331],
+    ]
+)
+
 
 def scrape_array(path: str):
     """
@@ -45,17 +48,13 @@ def scrape_array(path: str):
     with open(path, "r") as h:
         matrix = []
         for line in h:
-            matrix.append([
-                int(node) for node in line.strip().split(",")
-            ])
+            matrix.append([int(node) for node in line.strip().split(",")])
     return np.array(matrix)
 
+
 def a_star(
-        array,
-        start=None,
-        end=None,
-        neighbors=None,
-    ):
+    array, start=None, end=None, neighbors=None,
+):
     """
     Find the optimal path sum through the input array of node weights using the
     A* algorithm.
@@ -97,12 +96,16 @@ def a_star(
                 scores[neighbor] = score
                 candidates.add(neighbor)
 
+
 @print_result
 def solve():
-    return sum(a_star(
-        scrape_array(os.path.join(DATA_DIR, "p081_matrix.txt")),
-        neighbors=((0, 1), (1, 0)),
-    ))
+    return sum(
+        a_star(
+            scrape_array(os.path.join(DATA_DIR, "p081_matrix.txt")),
+            neighbors=((0, 1), (1, 0)),
+        )
+    )
+
 
 if __name__ == "__main__":
     solve()

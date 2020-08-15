@@ -18,6 +18,7 @@ the value of the denominator.
 """
 from .utils import print_result
 
+
 def gcd(a, b):
     """
     Returns the GCD (Greatest Common Divisor) of integers a and b.
@@ -26,12 +27,14 @@ def gcd(a, b):
         a, b = b, a % b
     return a
 
+
 def simplify(a, b):
     """
     Simplifies the fraction a / b by dividing out the GCD.
     """
     d = gcd(a, b)
     return a // d, b // d
+
 
 @print_result
 def solve():
@@ -54,6 +57,7 @@ def solve():
                     p_a *= a
                     p_b *= b
     return simplify(p_a, p_b)[-1]
+
 
 if __name__ == "__main__":
     solve()

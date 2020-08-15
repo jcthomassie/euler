@@ -5,16 +5,18 @@ Shared utility functions.
 import functools
 import math
 import time
-from typing import Callable, List, Tuple, Generator
+from typing import Callable, Generator, List, Tuple
 
 import numpy as np
 import pyperclip
+
 
 def print_result(func: Callable, verbose=False) -> Callable:
     """
     Time the function call; print the call syntax, runtime, and result after
     call finishes before returning the result.
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         t_0 = time.perf_counter()
@@ -27,7 +29,9 @@ def print_result(func: Callable, verbose=False) -> Callable:
         # Copy result to clipboard
         pyperclip.copy(str(res))
         return res
+
     return wrapper
+
 
 ###############################################################################
 # PRIMES
@@ -48,6 +52,7 @@ def prime_mask(n: int):
                 composite += i
     return primes
 
+
 def prime_list(n: int) -> List[int]:
     """
     Generates a list of all primes below the input number.
@@ -56,6 +61,7 @@ def prime_list(n: int) -> List[int]:
     if n <= 2:
         return []
     return [2, *(i for i in range(3, n, 2) if mask[i])]
+
 
 ###############################################################################
 # COPRIMES
@@ -70,6 +76,7 @@ def _coprime_children(m, n, stop):
         yield from _coprime_children(2 * m + n, m, stop)
         yield from _coprime_children(m + 2 * n, n, stop)
 
+
 def coprimes_odd_odd(stop: int) -> List[int]:
     """
     Returns list of all coprime pairs (m, n) where ``stop`` >= m > n
@@ -77,12 +84,14 @@ def coprimes_odd_odd(stop: int) -> List[int]:
     """
     return list(_coprime_children(3, 1, stop))
 
+
 def coprimes_odd_even(stop: int) -> List[int]:
     """
     Returns list of all coprime pairs (m, n) where ``stop`` >= m > n
     and one of each is even and the other is odd.
     """
     return list(_coprime_children(2, 1, stop))
+
 
 def coprimes(stop: int) -> List[int]:
     """
@@ -93,11 +102,13 @@ def coprimes(stop: int) -> List[int]:
         *_coprime_children(2, 1, stop),
     ]
 
+
 ###############################################################################
 # TRIANGLES
 ###############################################################################
 Triangle = Tuple[int, int, int]
 TriangleGenerator = Generator[Triangle, None, None]
+
 
 def euclid(m: int, n: int) -> Triangle:
     """
@@ -111,10 +122,11 @@ def euclid(m: int, n: int) -> Triangle:
     m2 = m ** 2
     n2 = n ** 2
     return (
-        m2 - n2,   # A
-        2 * m * n, # B
-        m2 + n2,   # C
+        m2 - n2,  # A
+        2 * m * n,  # B
+        m2 + n2,  # C
     )
+
 
 def generate_primitive_triples(stop: int) -> TriangleGenerator:
     """
@@ -129,6 +141,7 @@ def generate_primitive_triples(stop: int) -> TriangleGenerator:
     m_max = math.ceil(math.sqrt(stop))
     for m, n in _coprime_children(2, 1, m_max):
         yield euclid(m, n)
+
 
 def generate_triples(stop: int) -> TriangleGenerator:
     """

@@ -27,19 +27,18 @@ exactly one integer sided right angle triangle be formed?
 """
 import collections
 import math
-import sys
-from .utils import print_result, generate_triples
+
+from .utils import generate_triples, print_result
+
 
 @print_result
 def solve():
     length = 1_500_000
-    perims = collections.Counter((
-        sum(sides) for sides in generate_triples(math.ceil(length / 2))
-    ))
-    return sum(
-        1 for l, count in perims.items()
-        if l <= length and count == 1
+    perims = collections.Counter(
+        (sum(sides) for sides in generate_triples(math.ceil(length / 2)))
     )
+    return sum(1 for p, count in perims.items() if p <= length and count == 1)
+
 
 if __name__ == "__main__":
     solve()

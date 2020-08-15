@@ -40,6 +40,7 @@ from .utils import print_result
 
 MAX_DEPTH = 50
 
+
 def is_lychrel(n: int) -> bool:
     for _ in range(MAX_DEPTH):
         n += int(str(n)[::-1])
@@ -47,12 +48,11 @@ def is_lychrel(n: int) -> bool:
             return False
     return True
 
+
 @print_result
 def solve():
-    return len([
-        n for n in range(10_000)
-        if is_lychrel(n)
-    ])
+    return len([n for n in range(10_000) if is_lychrel(n)])
+
 
 if __name__ == "__main__":
     solve()

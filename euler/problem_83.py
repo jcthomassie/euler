@@ -30,11 +30,11 @@ from . import DATA_DIR
 from .problem_81 import a_star, scrape_array
 from .utils import print_result
 
+
 @print_result
 def solve():
-    return sum(a_star(
-        scrape_array(os.path.join(DATA_DIR, "p083_matrix.txt")),
-    ))
+    return sum(a_star(scrape_array(os.path.join(DATA_DIR, "p083_matrix.txt")),))
+
 
 if __name__ == "__main__":
     solve()

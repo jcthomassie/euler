@@ -25,6 +25,7 @@ two abundant numbers.
 from .problem_21 import divisor_sums
 from .utils import print_result
 
+
 def abundant_numbers(n: int):
     """
     Return a list of all abundant numbers below n.
@@ -34,6 +35,7 @@ def abundant_numbers(n: int):
         if b > a:
             abundant.append(a)
     return abundant
+
 
 def abundant_sums(n: int):
     """
@@ -50,10 +52,12 @@ def abundant_sums(n: int):
             sums.add(s)
     return sums
 
+
 @print_result
 def solve():
     n = 28123
     return sum(set(range(n)) - abundant_sums(n))
+
 
 if __name__ == "__main__":
     solve()

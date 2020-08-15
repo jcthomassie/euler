@@ -67,24 +67,13 @@ class Card:
     Playing card representation. Allows ordering operations between cards, and
     instantiation from a string representation.
     """
+
     # Suit values
-    suits = {
-        char: val
-        for val, char in enumerate("CDHS")
-    }
-    suits_inv = {
-        val: char
-        for char, val in suits.items()
-    }
+    suits = {char: val for val, char in enumerate("CDHS")}
+    suits_inv = {val: char for char, val in suits.items()}
     # Face values
-    faces = {
-        char: val
-        for val, char in enumerate("23456789TJQKA")
-    }
-    faces_inv = {
-        val: char
-        for char, val in faces.items()
-    }
+    faces = {char: val for val, char in enumerate("23456789TJQKA")}
+    faces_inv = {val: char for char, val in faces.items()}
     __slots__ = ("face_value", "suit_value")
 
     def __init__(self, face_value: int, suit_value: int):
@@ -93,46 +82,36 @@ class Card:
 
     def __eq__(self, other):
         return (
-            self.face_value == other.face_value and
-            self.suit_value == other.suit_value
+            self.face_value == other.face_value and self.suit_value == other.suit_value
         )
 
     def __gt__(self, other):
         if other is None:
             return True
         return (
-            self.face_value > other.face_value or
-            self.face_value == other.face_value and
-            self.suit_value > other.suit_value
+            self.face_value > other.face_value
+            or self.face_value == other.face_value
+            and self.suit_value > other.suit_value
         )
 
     def __lt__(self, other):
         if other is None:
             return False
         return (
-            self.face_value < other.face_value or
-            self.face_value == other.face_value and
-            self.suit_value < other.suit_value
+            self.face_value < other.face_value
+            or self.face_value == other.face_value
+            and self.suit_value < other.suit_value
         )
 
     def __repr__(self) -> str:
-        return (
-            f"{self.__class__.__name__}"
-            f"({self.face_value}, {self.suit_value})"
-        )
+        return f"{self.__class__.__name__}" f"({self.face_value}, {self.suit_value})"
 
     def __str__(self) -> str:
-        return (
-            f"{self.faces_inv[self.face_value]}"
-            f"{self.suits_inv[self.suit_value]}"
-        )
+        return f"{self.faces_inv[self.face_value]}" f"{self.suits_inv[self.suit_value]}"
 
     @classmethod
     def from_str(cls, string: str):
-        return cls(
-            cls.faces[string[0]],
-            cls.suits[string[-1]],
-        )
+        return cls(cls.faces[string[0]], cls.suits[string[-1]],)
 
 
 class Hand:
@@ -140,6 +119,7 @@ class Hand:
     Poker hand representation. Contains a list of 5 Card objects. Allows
     ordering operations between hands.
     """
+
     _faces_descending = range(len(Card.faces))[::-1]
     _suits_descending = range(len(Card.suits))[::-1]
 
@@ -154,17 +134,13 @@ class Hand:
     @property
     def face_counts(self):
         if self._face_counts is None:
-            self._face_counts = Counter(
-                c.face_value for c in self.cards
-            )
+            self._face_counts = Counter(c.face_value for c in self.cards)
         return self._face_counts
 
     @property
     def suit_counts(self):
         if self._suit_counts is None:
-            self._suit_counts = Counter(
-                c.suit_value for c in self.cards
-            )
+            self._suit_counts = Counter(c.suit_value for c in self.cards)
         return self._suit_counts
 
     def get_where(self, face=None, suit=None):
@@ -172,9 +148,8 @@ class Hand:
         Yield cards that matches the input face and suit in descending order.
         """
         for card in self.cards:
-            if (
-                (face is None or card.face_value == face) and
-                (suit is None or card.suit_value == suit)
+            if (face is None or card.face_value == face) and (
+                suit is None or card.suit_value == suit
             ):
                 yield card
 
@@ -269,15 +244,11 @@ class Hand:
         return bool(self.cards)
 
     def __str__(self) -> str:
-        return (
-            f"{self.__class__.__name__}"
-            f"({' '.join(str(c) for c in self.cards)})"
-        )
+        return f"{self.__class__.__name__}" f"({' '.join(str(c) for c in self.cards)})"
 
     def __repr__(self) -> str:
         return (
-            f"{self.__class__.__name__}"
-            f"({', '.join(repr(c) for c in self.cards)})"
+            f"{self.__class__.__name__}" f"({', '.join(repr(c) for c in self.cards)})"
         )
 
 
@@ -288,11 +259,9 @@ def scrape_data(path: str):
     """
     with open(path, "r") as h:
         for line in h:
-            cards = [
-                Card.from_str(card_str)
-                for card_str in line.strip().split()
-            ]
+            cards = [Card.from_str(card_str) for card_str in line.strip().split()]
             yield Hand(*cards[:5]), Hand(*cards[5:])
+
 
 @print_result
 def solve():
@@ -304,6 +273,7 @@ def solve():
         else:
             scores[1] += 1
     return scores[0]
+
 
 if __name__ == "__main__":
     solve()

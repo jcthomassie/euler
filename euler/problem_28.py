@@ -20,6 +20,7 @@ in the same way?
 """
 from .utils import print_result
 
+
 @print_result
 def solve():
     last = 1001 * 1001
@@ -32,6 +33,7 @@ def solve():
             total += i
         step += 2
     return total
+
 
 if __name__ == "__main__":
     solve()

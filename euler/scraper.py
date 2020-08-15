@@ -4,8 +4,9 @@ Implements programmatic scraping of problems from https://projecteuler.net
 and creation of template python modules for problems.
 """
 import os
-import requests
 import textwrap
+
+import requests
 from bs4 import BeautifulSoup
 
 _OUTDIR = os.path.dirname(__file__)
@@ -13,8 +14,7 @@ _OUTDIR = os.path.dirname(__file__)
 _URL_TEMPLATE = "https://projecteuler.net/problem={}"
 _PATH_TEMPLATE = os.path.join(_OUTDIR, "problem_{}.py")
 _DATA_TEMPLATE = os.path.join(_OUTDIR, "data", "{}")
-_FILE_TEMPLATE = \
-'''# -*- coding: utf-8 -*-
+_FILE_TEMPLATE = '''# -*- coding: utf-8 -*-
 """
 {}
 """
@@ -28,11 +28,13 @@ if __name__ == "__main__":
     solve()
 '''
 
+
 class Problem:
     """
     Handles all scraping, downloading, and formatting for any Project Euler
     problem listed on https://projecteuler.net/archive
     """
+
     def __init__(self, number: int):
         self.number = number
         self._soup = None
@@ -93,10 +95,7 @@ class Problem:
             lines.append("")
             lines.extend(
                 textwrap.wrap(
-                    block,
-                    expand_tabs=True,
-                    break_long_words=False,
-                    width=80,
+                    block, expand_tabs=True, break_long_words=False, width=80,
                 )
             )
         return "\n".join(lines)

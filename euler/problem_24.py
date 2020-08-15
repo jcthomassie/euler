@@ -15,7 +15,9 @@ What is the millionth lexicographic permutation of the digits
 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9?
 """
 import functools
+
 from .utils import print_result
+
 
 @functools.lru_cache(10, typed=True)
 def factorial(n):
@@ -25,6 +27,7 @@ def factorial(n):
     if n in (1, 0):
         return 1
     return n * factorial(n - 1)
+
 
 @print_result
 def solve():
@@ -39,6 +42,7 @@ def solve():
             total += factorial(n)
         result += str(digits.pop(m - 1))
     return result
+
 
 if __name__ == "__main__":
     solve()

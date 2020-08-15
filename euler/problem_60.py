@@ -15,7 +15,7 @@ concatenate to produce another prime.
 """
 from collections import defaultdict
 
-from .utils import print_result, prime_mask
+from .utils import prime_mask, print_result
 
 P_MAX = 100000000
 P_MASK = prime_mask(P_MAX)
@@ -26,10 +26,11 @@ def generate_graph():
     Build graph of all pairs of 'substring' primes in the prime table.
     """
     graph = defaultdict(set)
-    concats = set(( # set of possible concatenated primes
-        str(n) for n in range(11, P_MAX, 2)
-        if P_MASK[n]
-    ))
+    concats = set(
+        (  # set of possible concatenated primes
+            str(n) for n in range(11, P_MAX, 2) if P_MASK[n]
+        )
+    )
     for c_1 in concats:
         for i in range(1, len(c_1)):
             if "0" in (c_1[0], c_1[i]):
@@ -46,11 +47,15 @@ def generate_graph():
                 graph[b].add(a)
     return graph
 
+
 def find_cliques(graph, size=5):
     """
     Find all cliques of the specified size in the input graph.
     """
-    len_neighbors = lambda n: len(graph[n])
+
+    def len_neighbors(n):
+        return len(graph[n])
+
     # largest vertex -> smallest vertex
     for node in sorted(graph.keys(), key=len_neighbors, reverse=True):
         clique = set((node,))
@@ -63,10 +68,12 @@ def find_cliques(graph, size=5):
                     yield clique
                     break
 
+
 @print_result
 def solve():
     graph = generate_graph()
     return sum(min(find_cliques(graph, size=5), key=sum))
+
 
 if __name__ == "__main__":
     solve()

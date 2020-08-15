@@ -18,7 +18,10 @@ def _solve(args: argparse.Namespace) -> None:
         solve = getattr(solution, "solve", None)
         if callable(solve):
             solve()
-        raise AttributeError(f"Solution {solution!r} does not provide a solve method")
+        else:
+            raise AttributeError(
+                f"Solution {solution!r} does not provide a solve method"
+            )
 
 
 def _scrape(args: argparse.Namespace) -> None:

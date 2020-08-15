@@ -11,6 +11,7 @@ _OUTDIR = os.path.dirname(__file__)
 
 _URL_TEMPLATE = "https://projecteuler.net/problem={}"
 _PATH_TEMPLATE = os.path.join(_OUTDIR, "problem_{}.py")
+_TEST_PATH_TEMPLATE = os.path.join(os.path.dirname(_OUTDIR), "tests/test_problem_{}.py")
 _DATA_TEMPLATE = os.path.join(_OUTDIR, "data", "{}")
 _FILE_TEMPLATE = '''# -*- coding: utf-8 -*-
 """
@@ -18,13 +19,37 @@ _FILE_TEMPLATE = '''# -*- coding: utf-8 -*-
 """
 from .utils import print_result
 
+
 @print_result
-def solve():
-    return
+def solve() -> int:
+    raise NotImplementedError()
+
 
 if __name__ == "__main__":
     solve()
 '''
+_TEST_FILE_TEMPLATE = """import warnings
+
+import pytest
+
+problem = pytest.importorskip("euler.problem_{}")
+
+SOLUTION = None
+
+
+def test_solution():
+    # Compute solution
+    try:
+        solution = problem.solve()
+    except NotImplementedError:
+        warnings.warn("Solution is not yet implemented")
+        return
+    # Validate solution
+    if SOLUTION is None:
+        warnings.warn("Correct solution is unknown")
+        return
+    assert solution == SOLUTION
+"""
 
 
 class Problem:
@@ -46,6 +71,10 @@ class Problem:
         return _PATH_TEMPLATE.format(self.number)
 
     @property
+    def test_module_path(self) -> str:
+        return _TEST_PATH_TEMPLATE.format(self.number)
+
+    @property
     def soup(self) -> BeautifulSoup:
         if self._soup is None:
             response = requests.get(self.source_url)
@@ -57,6 +86,8 @@ class Problem:
         links = []
         for link in self.soup.find_all("a"):
             href = link.get("href")
+            if href is None:
+                continue
             if href.startswith("project/resources/"):
                 links.append(f"https://projecteuler.net/{href}")
         return links
@@ -103,6 +134,17 @@ class Problem:
             h.write(_FILE_TEMPLATE.format(self.module_docstring()))
             return self.module_path
 
+    def create_test_module(self) -> Optional[str]:
+        """Create a python module for testing the problem.
+
+        Does nothing if the module already exists.
+        """
+        if os.path.isfile(self.test_module_path):
+            return None
+        with open(self.test_module_path, "w", encoding="utf-8") as h:
+            h.write(_TEST_FILE_TEMPLATE.format(self.number))
+            return self.test_module_path
+
     def download_files(self) -> List[str]:
         """Download any associated data files for the problem.
 
@@ -134,5 +176,8 @@ class Problem:
         module = self.create_module()
         if module is not None:
             paths.append(module)
+        test_module = self.create_test_module()
+        if test_module is not None:
+            paths.append(test_module)
         paths.extend(self.download_files())
         return paths

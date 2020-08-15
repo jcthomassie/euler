@@ -1,77 +1,65 @@
 # -*- coding: utf-8 -*-
-import io
+"""Install the euler package, along with all required dependencies.
+
+Extras:
+    - dev: Required to run linting, formatting, and type checking.
+"""
+import codecs
 import os
-import platform
-from glob import glob
-from setuptools import setup, find_packages
 
-from euler import __author__, __email__, __version__
+from setuptools import find_packages, setup
 
-###############################################################################
-#                            PACKAGE METADATA                                 #
-###############################################################################
 NAME = "euler"
-VERSION = __version__
-AUTHOR = __author__
-EMAIL = __email__
+AUTHOR = "Julian Thomassie"
+AUTHOR_EMAIL = "julianthomassie@gmail.com"
 DESCRIPTION = "Python implementations of Project Euler solutions."
 URL = "https://github.com/jcthomassie/euler"
+
 REQUIRES_PYTHON = ">=3.6"
-REQUIRED = [
-    "numba",
+REQUIRES = [
     "numpy",
     "pyperclip",
     "beautifulsoup4",
 ]
-PACKAGES = find_packages()
+EXTRAS_REQUIRE = {
+    "dev": ["black", "isort", "flake8", "mypy"],
+}
 
-# Import the README and use it as the long-description.
-here = os.path.abspath(os.path.dirname(__file__))
-try:
-    with io.open(os.path.join(here, "README.md"), encoding="utf-8") as f:
-        long_description = "\n" + f.read()
-except FileNotFoundError:
-    long_description = DESCRIPTION
 
-req_str = "\n*     ".join(REQUIRED)
-print(
-    "* * * * * * * * * Installing Package! * * * * * * * * * *\n"
-    f"* Name = {NAME}\n"
-    f"* Version = {VERSION}\n"
-    f"* Author = {AUTHOR}\n"
-    f"* Email = {EMAIL}\n"
-    f"*\n* {DESCRIPTION}\n*\n"
-    f"* Requirements:\n*     {req_str}\n*\n"
-    "* * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
-)
+def read(rel_path: str) -> str:
+    here = os.path.abspath(os.path.dirname(__file__))
+    with codecs.open(os.path.join(here, rel_path), "r") as f:
+        return f.read()
 
-###############################################################################
-#                               RUN SETUP                                     #
-###############################################################################
-setup(
-    name=NAME,
-    version=VERSION,
-    description=DESCRIPTION,
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    author=AUTHOR,
-    author_email=EMAIL,
-    python_requires=REQUIRES_PYTHON,
-    url=URL,
-    packages=PACKAGES,
-    install_requires=REQUIRED,
-    include_package_data=True,
-    entry_points={
-        "console_scripts": [
-            "euler = euler.__main__:main",
-        ]
-    },
-    classifiers=[
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-    ],
-)
 
-print(f"\n********** Finished Installing '{NAME}' **********")
+def get_version(rel_path: str) -> str:
+    for line in read(rel_path).splitlines():
+        if line.startswith("__version__"):
+            quote = '"' if '"' in line else "'"
+            return line.split(quote)[1]
+    raise RuntimeError("Unable to locate version string.")
+
+
+if __name__ == "__main__":
+    setup(
+        name=NAME,
+        version=get_version("euler/__init__.py"),
+        description=DESCRIPTION,
+        long_description=read("README.md"),
+        long_description_content_type="text/markdown",
+        author=AUTHOR,
+        author_email=AUTHOR_EMAIL,
+        python_requires=REQUIRES_PYTHON,
+        url=URL,
+        packages=find_packages(),
+        install_requires=REQUIRES,
+        extras_require=EXTRAS_REQUIRE,
+        include_package_data=True,
+        entry_points={"console_scripts": ["euler = euler.__main__:main"]},
+        classifiers=[
+            "Programming Language :: Python",
+            "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: 3.7",
+        ],
+    )

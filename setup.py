@@ -3,6 +3,7 @@
 
 Extras:
     - dev: Required to run linting, formatting, and type checking.
+    - tests: Required to perform tests.
 """
 import codecs
 import os
@@ -24,7 +25,9 @@ REQUIRES = [
 ]
 EXTRAS_REQUIRE = {
     "dev": ["black", "isort", "flake8", "mypy"],
+    "tests": ["pytest"],
 }
+EXTRAS_REQUIRE["dev"] += EXTRAS_REQUIRE["tests"]
 
 
 def read(rel_path: str) -> str:

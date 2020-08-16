@@ -32,14 +32,14 @@ def solve() -> int:
     target = 1000000
     total = 0
     digits = list(range(10))
-    result = ""
+    result = []
     for n in digits[::-1]:
         m = 1
         while total + factorial(n) < target:
             m += 1
             total += factorial(n)
-        result += str(digits.pop(m - 1))
-    return int(result)
+        result.append(f"{digits.pop(m - 1)}")
+    return int("".join(result))
 
 
 if __name__ == "__main__":

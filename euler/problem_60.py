@@ -27,7 +27,7 @@ def generate_graph() -> DefaultDict[int, Set[int]]:
     graph = defaultdict(set)
     concats = set(
         (  # set of possible concatenated primes
-            str(n) for n in range(11, P_MAX, 2) if mask[n]
+            f"{n}" for n in range(11, P_MAX, 2) if mask[n]
         )
     )
     for c_1 in concats:

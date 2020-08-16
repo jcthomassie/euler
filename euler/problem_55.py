@@ -43,8 +43,8 @@ MAX_DEPTH = 50
 
 def is_lychrel(n: int) -> bool:
     for _ in range(MAX_DEPTH):
-        n += int(str(n)[::-1])
-        if is_palindrome(str(n)):
+        n += int(f"{n}"[::-1])
+        if is_palindrome(f"{n}"):
             return False
     return True
 

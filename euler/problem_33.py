@@ -45,8 +45,8 @@ def solve() -> int:
             if a >= b:
                 break
             # Check for possible shared digit
-            a_str = str(a)
-            b_str = str(b)
+            a_str = f"{a}"
+            b_str = f"{b}"
             if a_str[1] == b_str[0]:
                 # See if reduced fraction matches
                 a_r = int(a_str[0])

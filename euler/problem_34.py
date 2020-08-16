@@ -36,10 +36,10 @@ def get_upper_bound() -> int:
 
 @print_result
 def solve() -> int:
-    digit_factorials = {str(d): factorial(d) for d in range(10)}
+    digit_factorials = {f"{d}": factorial(d) for d in range(10)}
     total = 0
     for n in range(10, get_upper_bound()):
-        if n == sum(digit_factorials[d] for d in str(n)):
+        if n == sum(digit_factorials[d] for d in f"{n}"):
             total += n
     return total
 

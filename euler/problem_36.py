@@ -19,7 +19,7 @@ from .utils import print_result
 @print_result
 def solve() -> int:
     return sum(
-        n for n in range(1000000) if is_palindrome(str(n)) and is_palindrome(bin(n)[2:])
+        n for n in range(1000000) if is_palindrome(f"{n}") and is_palindrome(bin(n)[2:])
     )
 
 

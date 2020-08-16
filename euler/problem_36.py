@@ -12,13 +12,8 @@ base 10 and base 2.
 (Please note that the palindromic number, in either base, may not include
 leading zeros.)
 """
+from .problem_4 import is_palindrome
 from .utils import print_result
-
-
-def is_palindrome(s: str) -> bool:
-    """Return True if input string is palindrome."""
-    h, r = divmod(len(s), 2)
-    return s[:h] == s[: h + r - 1 : -1]
 
 
 @print_result

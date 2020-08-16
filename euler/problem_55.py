@@ -35,7 +35,7 @@ How many Lychrel numbers are there below ten-thousand?
 NOTE: Wording was modified slightly on 24 April 2007 to emphasise the
 theoretical nature of Lychrel numbers.
 """
-from .problem_36 import is_palindrome
+from .problem_4 import is_palindrome
 from .utils import print_result
 
 MAX_DEPTH = 50

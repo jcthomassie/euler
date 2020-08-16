@@ -16,34 +16,25 @@ concatenate to produce another prime.
 from collections import defaultdict
 from typing import DefaultDict, Iterator, Set
 
-from .utils import prime_mask, print_result
-
-P_MAX = 100000000
+from .utils import is_prime, prime_list, print_result
 
 
-def generate_graph() -> DefaultDict[int, Set[int]]:
+def concats_prime(m: int, n: int) -> bool:
+    """Return True if inputs concatenate to a prime."""
+    return is_prime(int(f"{m}{n}")) and is_prime(int(f"{n}{m}"))
+
+
+def generate_graph(node_max: int) -> DefaultDict[int, Set[int]]:
     """Build graph of pairs of 'substring' primes in the prime table."""
-    mask = prime_mask(P_MAX)
     graph = defaultdict(set)
-    concats = set(
-        (  # set of possible concatenated primes
-            f"{n}" for n in range(11, P_MAX, 2) if mask[n]
-        )
-    )
-    for c_1 in concats:
-        for i in range(1, len(c_1)):
-            if "0" in (c_1[0], c_1[i]):
-                continue
-            # Check reverse order
-            c_2 = c_1[i:] + c_1[:i]
-            if c_2 not in concats:
-                continue
-            # Check substring primes
-            a = int(c_1[:i])
-            b = int(c_1[i:])
-            if mask[a] and mask[b]:
-                graph[a].add(b)
-                graph[b].add(a)
+    primes = prime_list(node_max)
+    for i in range(len(primes)):
+        for j in range(i, len(primes)):
+            p = primes[i]
+            q = primes[j]
+            if concats_prime(p, q):
+                graph[p].add(q)
+                graph[q].add(p)
     return graph
 
 
@@ -70,7 +61,7 @@ def find_cliques(
 
 @print_result
 def solve() -> int:
-    graph = generate_graph()
+    graph = generate_graph(10_000)
     return sum(min(find_cliques(graph, size=5), key=sum))
 
 

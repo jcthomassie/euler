@@ -1,7 +1,7 @@
-import pytest
+from euler.problem_44 import solve
 
-problem = pytest.importorskip("euler.problem_44")
+from .utils import validate_solution
 
 
-def test_solution(validate_solution):
-    validate_solution(problem, answer=5482660)
+def test_solution():
+    validate_solution(solve, answer=5482660)

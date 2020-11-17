@@ -14,25 +14,28 @@ How many circular primes are there below one million?
 """
 from typing import Iterator
 
-from .utils import prime_list, print_result
+from .utils import prime_mask, print_result
 
 MAX = 1_000_000
 
 
 def rotations(word: str) -> Iterator[str]:
     """Generate all rotations of the input word."""
-    yield word
     for i in range(1, len(word)):
         yield word[i:] + word[:i]
 
 
 @print_result
 def solve() -> int:
-    primes = set(prime_list(MAX))
-    count = 0
-    for prime in primes:
-        for rot in rotations(f"{prime}"):
-            if int(rot) not in primes:
+    primes = prime_mask(MAX)
+    count = 1  # include 2
+    for n in range(3, MAX, 2):
+        # Check number
+        if not primes[n]:
+            continue
+        # Check rotations
+        for rot in rotations(f"{n}"):
+            if not primes[int(rot)]:
                 break
         else:
             count += 1

@@ -12,12 +12,29 @@ There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71,
 
 How many circular primes are there below one million?
 """
-from .utils import print_result
+from typing import Iterator
+
+from .utils import prime_list, print_result
+
+MAX = 1_000_000
+
+
+def rotations(word: str) -> Iterator[str]:
+    """Generate all rotations of the input word."""
+    yield word
+    for i in range(1, len(word)):
+        yield word[i:] + word[:i]
 
 
 @print_result
 def solve() -> int:
-    raise NotImplementedError()
+    primes = set(prime_list(MAX))
+    count = 0
+    for prime in primes:
+        family = set(int(rot) for rot in rotations(str(prime)))
+        if family.issubset(primes):
+            count += 1
+    return count
 
 
 if __name__ == "__main__":

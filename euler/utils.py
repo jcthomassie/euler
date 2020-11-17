@@ -65,7 +65,7 @@ def is_prime(n: int) -> bool:
         return n > 1
     if n % 2 == 0 or n % 3 == 0:
         return False
-    for i in range(5, math.floor(math.sqrt(n)), 6):
+    for i in range(5, math.floor(math.sqrt(n)) + 1, 6):
         if n % i == 0 or n % (i + 2) == 0:
             return False
     return True

@@ -31,8 +31,10 @@ def solve() -> int:
     primes = set(prime_list(MAX))
     count = 0
     for prime in primes:
-        family = set(int(rot) for rot in rotations(str(prime)))
-        if family.issubset(primes):
+        for rot in rotations(f"{prime}"):
+            if int(rot) not in primes:
+                break
+        else:
             count += 1
     return count
 

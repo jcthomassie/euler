@@ -15,28 +15,27 @@ What 12-digit number do you form by concatenating the three terms in this
 sequence?
 """
 from collections import defaultdict
-from typing import List
+from typing import Iterator
 
 from .utils import prime_mask, print_result
 
 
-def four_digit_primes() -> List[int]:
-    fdp = []
+def four_digit_primes() -> Iterator[int]:
+    """Generate all four-digit prime numbers."""
     primes = prime_mask(9999)
     for n in range(1001, 9999, 2):
         if primes[n]:
-            fdp.append(n)
-    return fdp
+            yield n
 
 
 @print_result
 def solve() -> int:
-    fdp = four_digit_primes()
     # Find all permutation groups
     perms = defaultdict(list)
-    for prime in fdp:
-        perms[tuple(sorted(f"{prime}"))].append(prime)
-    # Drop all groups that are too short
+    for prime in four_digit_primes():
+        digits = tuple(sorted(f"{prime}"))
+        perms[digits].append(prime)
+    # Find evenly spaced 3-group
     for group in perms.values():
         if len(group) < 3:
             continue

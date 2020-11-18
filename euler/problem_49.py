@@ -14,12 +14,35 @@ exhibiting this property, but there is one other 4-digit increasing sequence.
 What 12-digit number do you form by concatenating the three terms in this
 sequence?
 """
-from .utils import print_result
+from collections import defaultdict
+from typing import List
+
+from .utils import prime_mask, print_result
+
+
+def four_digit_primes() -> List[int]:
+    fdp = []
+    primes = prime_mask(9999)
+    for n in range(1001, 9999, 2):
+        if primes[n]:
+            fdp.append(n)
+    return fdp
 
 
 @print_result
 def solve() -> int:
-    raise NotImplementedError()
+    fdp = four_digit_primes()
+    # Find all permutation groups
+    perms = defaultdict(list)
+    for prime in fdp:
+        perms[tuple(sorted(f"{prime}"))].append(prime)
+    # Drop all groups that are too short
+    for group in perms.values():
+        if len(group) < 3:
+            continue
+        diffs = [b - a for a, b in zip(group, group[1:])]
+        print(diffs)
+    raise ValueError("Failed to find solution")
 
 
 if __name__ == "__main__":

@@ -42,12 +42,9 @@ def solve() -> int:
         if len(group) < 3:
             continue
         # Check all 3-groups
-        for i in range(len(group)):
-            a = group[i]
-            for j in range(i + 1, len(group)):
-                b = group[j]
-                for k in range(j + 1, len(group)):
-                    c = group[k]
+        for i, a in enumerate(group, start=1):
+            for j, b in enumerate(group[i:], start=1):
+                for c in group[i + j:]:
                     # Evenly spaced
                     if (b - a) == (c - b):
                         return int(f"{a}{b}{c}")

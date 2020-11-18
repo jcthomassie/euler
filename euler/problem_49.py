@@ -15,7 +15,7 @@ What 12-digit number do you form by concatenating the three terms in this
 sequence?
 """
 from collections import defaultdict
-from typing import Any, Iterator, List
+from typing import Iterator
 
 from .utils import prime_mask, print_result
 
@@ -28,19 +28,6 @@ def four_digit_primes() -> Iterator[int]:
             yield n
 
 
-def partitions(seq: List[Any]) -> Iterator[List[List[Any]]]:
-    """Generate all possible partitions of the input list."""
-    if not seq:
-        yield []
-    elif len(seq) == 1:
-        yield [seq[:]]
-    else:
-        for i in range(1, len(seq) + 1):
-            lhs = seq[:i]
-            for rhs in partitions(seq[i:]):
-                yield [lhs, *rhs]
-
-
 @print_result
 def solve() -> int:
     # Find all permutation groups
@@ -48,16 +35,22 @@ def solve() -> int:
     for prime in four_digit_primes():
         digits = tuple(sorted(f"{prime}"))
         perms[digits].append(prime)
+    # Drop example group
+    del perms[tuple("1478")]
     # Find evenly spaced 3-group
     for group in perms.values():
         if len(group) < 3:
             continue
-        # Check all diffs for 3-run
-        diffs = [b - a for a, b in zip(group, group[1:])]
-        for part in partitions(diffs):
-            for p_a, p_b in zip(part, part[1:]):
-                if sum(p_a) == sum(p_b):
-                    return group
+        # Check all 3-groups
+        for i in range(len(group)):
+            a = group[i]
+            for j in range(i + 1, len(group)):
+                b = group[j]
+                for k in range(j + 1, len(group)):
+                    c = group[k]
+                    # Evenly spaced
+                    if (b - a) == (c - b):
+                        return int(f"{a}{b}{c}")
     raise ValueError("Failed to find solution")
 
 

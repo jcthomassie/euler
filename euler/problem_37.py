@@ -14,12 +14,36 @@ right and right to left.
 
 NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
 """
-from .utils import print_result
+from functools import lru_cache
+from typing import Iterator, List
+
+from .utils import is_prime, print_result
+
+
+def truncations(word: str) -> Iterator[str]:
+    for i in range(1, len(word)):
+        yield word[i:]  # left truncation
+        yield word[:-i]  # right truncation
+
+
+@lru_cache
+def is_prime_str(word: str) -> bool:
+    return is_prime(int(word))
 
 
 @print_result
 def solve() -> int:
-    raise NotImplementedError()
+    truncatables: List[int] = []
+    n = 11
+    while len(truncatables) < 11:
+        if is_prime(n):
+            for trunc in truncations(f"{n}"):
+                if not is_prime_str(trunc):
+                    break
+            else:
+                truncatables.append(n)
+        n += 2
+    return sum(truncatables)
 
 
 if __name__ == "__main__":

@@ -44,11 +44,11 @@ def solve() -> int:
         # Check all 3-groups
         for i, a in enumerate(group, start=1):
             for j, b in enumerate(group[i:], start=1):
-                for c in group[i + j:]:
+                for c in group[i + j :]:
                     # Evenly spaced
                     if (b - a) == (c - b):
                         return int(f"{a}{b}{c}")
-    raise ValueError("Failed to find solution")
+    raise RuntimeError("Failed to find solution")
 
 
 if __name__ == "__main__":

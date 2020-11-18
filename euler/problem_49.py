@@ -15,7 +15,7 @@ What 12-digit number do you form by concatenating the three terms in this
 sequence?
 """
 from collections import defaultdict
-from typing import Iterator
+from typing import Any, Iterator, List
 
 from .utils import prime_mask, print_result
 
@@ -26,6 +26,19 @@ def four_digit_primes() -> Iterator[int]:
     for n in range(1001, 9999, 2):
         if primes[n]:
             yield n
+
+
+def partitions(seq: List[Any]) -> Iterator[List[List[Any]]]:
+    """Generate all possible partitions of the input list."""
+    if not seq:
+        yield []
+    elif len(seq) == 1:
+        yield [seq[:]]
+    else:
+        for i in range(1, len(seq) + 1):
+            lhs = seq[:i]
+            for rhs in partitions(seq[i:]):
+                yield [lhs, *rhs]
 
 
 @print_result
@@ -39,8 +52,12 @@ def solve() -> int:
     for group in perms.values():
         if len(group) < 3:
             continue
+        # Check all diffs for 3-run
         diffs = [b - a for a, b in zip(group, group[1:])]
-        print(diffs)
+        for part in partitions(diffs):
+            for p_a, p_b in zip(part, part[1:]):
+                if sum(p_a) == sum(p_b):
+                    return group
     raise ValueError("Failed to find solution")
 
 

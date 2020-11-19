@@ -20,12 +20,13 @@ The same can be achieved by starting with 9 and multiplying by 1, 2, 3, 4, and
 What is the largest 1 to 9 pandigital 9-digit number that can be formed as the
 concatenated product of an integer with (1,2, ... , n) where n > 1?
 """
+import itertools
+
 from .utils import print_result
 
 
-def concatenated_product(n: int) -> bool:
+def concatenated_product(n_str: str) -> bool:
     """Return True if the input number is a 'concatenated product'."""
-    n_str = f"{n}"
     # Check all prefixes
     for i in range(1, len(n_str) // 2 + 1):
         seed = int(n_str[:i])
@@ -45,7 +46,11 @@ def concatenated_product(n: int) -> bool:
 
 @print_result
 def solve() -> int:
-    raise NotImplementedError()
+    for perm in itertools.permutations("987654321"):
+        pandigital = "".join(perm)
+        if concatenated_product(pandigital):
+            return int(pandigital)
+    raise ValueError("Failed to find solution")
 
 
 if __name__ == "__main__":

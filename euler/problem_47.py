@@ -33,6 +33,7 @@ def solve() -> int:
 
     @lru_cache
     def prime_factors(n: int) -> Tuple[int, ...]:
+        """Compute the prime factors of the input integer."""
         if mask[n] or n == 1:
             return (n,)
         for m in primes:
@@ -40,6 +41,7 @@ def solve() -> int:
                 return (m, *prime_factors(n // m))
         raise RuntimeError(f"Failed to factorize {n}")
 
+    # Look for N consecutive integers with N distinct prime factors
     count = 4
     for i in range(2, MAX):
         for j in range(i, i + count):

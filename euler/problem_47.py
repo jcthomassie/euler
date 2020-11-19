@@ -42,13 +42,15 @@ def solve() -> int:
         raise RuntimeError(f"Failed to factorize {n}")
 
     # Look for N consecutive integers with N distinct prime factors
+    run = 0
     count = 4
     for i in range(2, MAX):
-        for j in range(i, i + count):
-            if len(set(prime_factors(j))) != count:
-                break
+        if len(set(prime_factors(i))) == count:
+            run += 1
+            if run == count:
+                return i - count + 1
         else:
-            return i
+            run = 0
     raise RuntimeError("Failed to find solution")
 
 

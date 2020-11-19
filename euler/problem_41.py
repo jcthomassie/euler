@@ -10,21 +10,20 @@ also prime.
 
 What is the largest n-digit pandigital prime that exists?
 """
-from .utils import prime_mask, print_result
+import itertools
+
+from .utils import is_prime, print_result
 
 
 def largest_pandigital_prime(n: int = 4) -> int:
-    """Generate all nine-digit prime numbers that might be pandigital."""
+    """Find largest n-digit pandigital prime."""
     # Get test domain
     digits = "123456789"[:n]
-    n_min = int(digits)
-    n_max = int(digits[::-1]) | 1
-    comp = set(digits)
-    # Find largest prime that is pandigital
-    primes = prime_mask(n_max + 1)
-    for n in range(n_max, n_min, -2):
-        if primes[n] and set(f"{n}") == comp:
-            return n
+    # Find largest pandigital that is prime
+    for perm in itertools.permutations(digits[::-1]):
+        pandigital = int("".join(perm))
+        if is_prime(pandigital):
+            return pandigital
     raise RuntimeError("Failed to find solution")
 
 

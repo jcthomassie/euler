@@ -24,20 +24,26 @@ import functools
 from .utils import print_result
 
 
+def sum_digit_squares(n: int) -> int:
+    result = 0
+    while n:
+        n, mod = divmod(n, 10)
+        result += mod * mod
+    return result
+
+
 @functools.lru_cache
-def find_cycle(n: int) -> int:
-    if n in (1, 89):
-        return n
-    return find_cycle(sum(int(d) ** 2 for d in f"{n}"))
+def is_cycle_89(n: int) -> bool:
+    if n == 1:
+        return False
+    if n == 89:
+        return True
+    return is_cycle_89(sum_digit_squares(n))
 
 
 @print_result
 def solve() -> int:
-    count = 0
-    for n in range(1, 10_000_000):
-        if find_cycle(n) == 89:
-            count += 1
-    return count
+    return sum(is_cycle_89(n) for n in range(1, 10_000_000))
 
 
 if __name__ == "__main__":

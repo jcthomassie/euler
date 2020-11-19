@@ -23,7 +23,7 @@ from typing import Tuple
 
 from .utils import prime_mask, print_result
 
-MAX = 1_000_000
+MAX = 150_000
 
 
 @print_result
@@ -33,14 +33,21 @@ def solve() -> int:
 
     @lru_cache
     def prime_factors(n: int) -> Tuple[int, ...]:
-        if mask[n]:
+        if mask[n] or n == 1:
             return (n,)
         for m in primes:
             if n % m == 0:
                 return (m, *prime_factors(n // m))
         raise RuntimeError(f"Failed to factorize {n}")
 
-    return prime_factors(644)
+    count = 4
+    for i in range(2, MAX):
+        for j in range(i, i + count):
+            if len(set(prime_factors(j))) != count:
+                break
+        else:
+            return i
+    raise RuntimeError("Failed to find solution")
 
 
 if __name__ == "__main__":

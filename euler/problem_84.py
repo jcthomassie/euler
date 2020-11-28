@@ -134,25 +134,6 @@ BOARD_TYPES = [sq.group for sq in BOARD]
 
 
 ###############################################################################
-# MOVE FUNCTIONS
-###############################################################################
-def move(start_sq: Square, spaces: int) -> Square:
-    """
-    Move from start_sq by spaces.
-    """
-    return BOARD[(start_sq + spaces) % len(BOARD)]
-
-
-def find_next(start_sq: Square, group: str) -> Square:
-    """
-    Find the next instance of the specified group starting at ``start_sq`` and
-    moving forward (clockwise).
-    """
-    delta = (BOARD_TYPES[start_sq:] + BOARD_TYPES[:start_sq]).index(group)
-    return move(start_sq, delta)
-
-
-###############################################################################
 # PROBABILITIES
 ###############################################################################
 def _get_roll_weights(sides: int = 6) -> DefaultDict[int, float]:
@@ -170,9 +151,9 @@ def _get_chance_weights(ch_sq: Square) -> Dict[int, float]:
     direct = [GO, JAIL, C1, E3, H2, R1]
     return dict(
         (
-            (find_next(ch_sq, "R"), 2 / cards),  # next railroad (x 2)
-            (find_next(ch_sq, "U"), 1 / cards),  # next utility
-            (move(ch_sq, -3), 1 / cards),  # back 3 spaces
+            (ch_sq.find_next("R"), 2 / cards),  # next railroad (x 2)
+            (ch_sq.find_next("U"), 1 / cards),  # next utility
+            (ch_sq.move(-3), 1 / cards),  # back 3 spaces
             *((sq, 1 / cards) for sq in direct),  # direct to square
         )
     )
@@ -194,7 +175,7 @@ def _get_move_weights(sq: Square, sides: int = 6) -> DefaultDict[int, float]:
         # Handle doubles
         if spaces % 2 == 0:
             weight -= p_j / sides
-        weights[move(sq, spaces)] += weight
+        weights[sq.move(spaces)] += weight
     return weights
 
 

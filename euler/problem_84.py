@@ -142,6 +142,7 @@ CH_CARDS = CC_CARDS = 16
 # PROBABILITIES ------------------------------------------------------------- #
 ###############################################################################
 def get_roll_weights(sides: int = 6) -> Dict[int, Fraction]:
+    """Build probability map for all possible dice rolls."""
     rolls = Counter(
         sum(roll) for roll in combinations_with_replacement(range(1, sides + 1), 2)
     )
@@ -153,6 +154,9 @@ def get_roll_weights(sides: int = 6) -> Dict[int, Fraction]:
 
 
 def get_chance_weights(ch_sq: Square) -> Dict[Square, Fraction]:
+    """Build probability map for all possible destination squares from chance."""
+    assert ch_sq.group == "CH"
+
     def prob(count: int) -> Fraction:
         # 16 is number of chance cards
         return Fraction(numerator=count, denominator=CH_CARDS)
@@ -167,6 +171,8 @@ def get_chance_weights(ch_sq: Square) -> Dict[Square, Fraction]:
 
 
 def get_community_chest_weights() -> Dict[Square, Fraction]:
+    """Build probability map for all possible destination squares from community chest."""
+
     def prob(count: int) -> Fraction:
         # 16 is number of chance cards
         return Fraction(numerator=count, denominator=CC_CARDS)
@@ -179,6 +185,7 @@ ROLL_WEIGHTS = get_roll_weights()
 
 
 def get_move_weights(sq: Square, sides: int = 6) -> Dict[Square, Fraction]:
+    """Build probability map for dice rolls from the input square."""
     weights: Dict[Square, Fraction] = {}
     weights[JAIL] = p_j = Fraction(numerator=1, denominator=sides ** 3)
     for spaces, weight in ROLL_WEIGHTS.items():
@@ -191,11 +198,14 @@ def get_move_weights(sq: Square, sides: int = 6) -> Dict[Square, Fraction]:
 
 
 def generate_all_weights() -> Dict[Square, Dict[Square, Fraction]]:
-    weights: Dict[Square, Dict[Square, Fraction]] = dict()
+    """Build complete probability map from each square to all possible targets."""
+    weights: Dict[Square, Dict[Square, Fraction]] = {}
     for sq in BOARD:
-        w_sq = weights[sq] = dict()
+        w_sq = weights[sq] = {}
+        # Handle Go To Jail
         if sq is G2J:
             w_sq[JAIL] = Fraction(1)
+        # Handle card draw squares
         elif sq.group in ("CC", "CH"):
             if sq.group == "CH":
                 draws = get_chance_weights(sq)
@@ -206,6 +216,7 @@ def generate_all_weights() -> Dict[Square, Dict[Square, Fraction]]:
             for t_sq in set((*draws.keys(), *rolls.keys())):
                 w_sq[t_sq] = draws.get(t_sq, Fraction(0))
                 w_sq[t_sq] += rolls.get(t_sq, 0) * p_roll
+        # Handle normal squares
         else:
             w_sq.update(get_move_weights(sq))
     return weights

@@ -84,7 +84,8 @@ If, instead of using two 6-sided dice, two 4-sided dice are used, find the six-
 digit modal string.
 """
 import enum
-from collections import defaultdict
+from collections import Counter, defaultdict
+from fractions import Fraction
 from itertools import combinations_with_replacement
 from typing import DefaultDict, Dict
 
@@ -136,14 +137,15 @@ BOARD_TYPES = [sq.group for sq in BOARD]
 ###############################################################################
 # PROBABILITIES ------------------------------------------------------------- #
 ###############################################################################
-def _get_roll_weights(sides: int = 6) -> DefaultDict[int, float]:
-    weights: DefaultDict[int, float] = defaultdict(lambda: 0)
-    rolls = list(combinations_with_replacement(range(1, sides + 1), 2))
-    p_roll = 1 / len(rolls)
-    for roll in rolls:
-        spaces = sum(roll)
-        weights[spaces] += p_roll
-    return weights
+def get_roll_weights(sides: int = 6) -> Dict[int, Fraction]:
+    rolls = Counter(
+        sum(roll) for roll in combinations_with_replacement(range(1, sides + 1), 2)
+    )
+    total = sum(rolls.values())
+    return {
+        roll: Fraction(numerator=count, denominator=total)
+        for roll, count in rolls.items()
+    }
 
 
 def _get_chance_weights(ch_sq: Square) -> Dict[int, float]:
@@ -165,7 +167,7 @@ def _get_community_chest_weights() -> Dict[int, float]:
     return dict((sq, 1 / cards) for sq in direct)
 
 
-ROLL_WEIGHTS = _get_roll_weights()
+ROLL_WEIGHTS = get_roll_weights()
 
 
 def _get_move_weights(sq: Square, sides: int = 6) -> DefaultDict[int, float]:

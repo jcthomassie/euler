@@ -108,6 +108,15 @@ class Square(enum.IntEnum):
     def group(self) -> str:
         return self.name.strip("1234")
 
+    def move(self, spaces: int) -> "Square":
+        """Move from start_sq by spaces."""
+        return BOARD[(self + spaces) % len(BOARD)]
+
+    def find_next(self, group: str) -> "Square":
+        """Find the next instance of the specified group moving forward (clockwise)."""
+        delta = (BOARD_TYPES[self:] + BOARD_TYPES[:self]).index(group)
+        return self.move(delta)
+
 
 # List of all squares in order
 # fmt: off

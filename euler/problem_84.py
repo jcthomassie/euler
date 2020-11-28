@@ -84,10 +84,10 @@ If, instead of using two 6-sided dice, two 4-sided dice are used, find the six-
 digit modal string.
 """
 import enum
-from collections import Counter, defaultdict
+from collections import Counter
 from fractions import Fraction
 from itertools import combinations_with_replacement
-from typing import DefaultDict, Dict
+from typing import Dict
 
 from .utils import print_result
 
@@ -134,6 +134,10 @@ BOARD = (
 BOARD_TYPES = [sq.group for sq in BOARD]
 
 
+# Number of community chest and chance cards
+CH_CARDS = CC_CARDS = 16
+
+
 ###############################################################################
 # PROBABILITIES ------------------------------------------------------------- #
 ###############################################################################
@@ -148,64 +152,69 @@ def get_roll_weights(sides: int = 6) -> Dict[int, Fraction]:
     }
 
 
-def _get_chance_weights(ch_sq: Square) -> Dict[int, float]:
-    cards = 16
+def get_chance_weights(ch_sq: Square) -> Dict[Square, Fraction]:
+    def prob(count: int) -> Fraction:
+        # 16 is number of chance cards
+        return Fraction(numerator=count, denominator=CH_CARDS)
+
     direct = [GO, JAIL, C1, E3, H2, R1]
-    return dict(
-        (
-            (ch_sq.find_next("R"), 2 / cards),  # next railroad (x 2)
-            (ch_sq.find_next("U"), 1 / cards),  # next utility
-            (ch_sq.move(-3), 1 / cards),  # back 3 spaces
-            *((sq, 1 / cards) for sq in direct),  # direct to square
-        )
-    )
+    return {
+        ch_sq.find_next("R"): prob(2),  # next railroad (x 2)
+        ch_sq.find_next("U"): prob(1),  # next utility
+        ch_sq.move(-3): prob(1),  # back 3 spaces
+        **{sq: prob(1) for sq in direct},  # direct to square
+    }
 
 
-def _get_community_chest_weights() -> Dict[int, float]:
-    cards = 16
+def get_community_chest_weights() -> Dict[Square, Fraction]:
+    def prob(count: int) -> Fraction:
+        # 16 is number of chance cards
+        return Fraction(numerator=count, denominator=CC_CARDS)
+
     direct = [GO, JAIL]
-    return dict((sq, 1 / cards) for sq in direct)
+    return {sq: prob(1) for sq in direct}
 
 
 ROLL_WEIGHTS = get_roll_weights()
 
 
-def _get_move_weights(sq: Square, sides: int = 6) -> DefaultDict[int, float]:
-    weights: DefaultDict[int, float] = defaultdict(lambda: 0)
-    weights[JAIL] = p_j = (1 / sides) ** 3
+def get_move_weights(sq: Square, sides: int = 6) -> Dict[Square, Fraction]:
+    weights: Dict[Square, Fraction] = {}
+    weights[JAIL] = p_j = Fraction(numerator=1, denominator=sides ** 3)
     for spaces, weight in ROLL_WEIGHTS.items():
         # Handle doubles
         if spaces % 2 == 0:
             weight -= p_j / sides
-        weights[sq.move(spaces)] += weight
+        target = sq.move(spaces)
+        weights[target] = weight + weights.get(target, 0)
     return weights
 
 
-def generate_all_weights() -> Dict[int, Dict[int, float]]:
-    weights: Dict[int, Dict[int, float]] = dict()
+def generate_all_weights() -> Dict[Square, Dict[Square, Fraction]]:
+    weights: Dict[Square, Dict[Square, Fraction]] = dict()
     for sq in BOARD:
         w_sq = weights[sq] = dict()
         if sq is G2J:
-            w_sq[JAIL] = 1
+            w_sq[JAIL] = Fraction(1)
         elif sq.group in ("CC", "CH"):
             if sq.group == "CH":
-                draws = _get_chance_weights(sq)
+                draws = get_chance_weights(sq)
             else:
-                draws = _get_community_chest_weights()
-            rolls = _get_move_weights(sq)
+                draws = get_community_chest_weights()
+            rolls = get_move_weights(sq)
             p_roll = 1 - sum(draws.values())  # type: ignore
             for t_sq in set((*draws.keys(), *rolls.keys())):
-                w_sq[t_sq] = draws.get(t_sq, 0)
+                w_sq[t_sq] = draws.get(t_sq, Fraction(0))
                 w_sq[t_sq] += rolls.get(t_sq, 0) * p_roll
         else:
-            w_sq.update(_get_move_weights(sq))
+            w_sq.update(get_move_weights(sq))
     return weights
 
 
-def print_prob(w: Dict[int, float]) -> None:
+def print_prob(w: Dict[Square, Fraction]) -> None:
     for sq, p in sorted(w.items(), key=lambda t: t[-1]):
-        print(sq, f"\t{p * 100:6.3f}%")
-    print("TOTAL", f"\t{sum(w.values()) * 100:6.3f}%")
+        print(sq, f"\t{float(p) * 100:6.3f}%")
+    print("TOTAL", f"\t{float(sum(w.values())) * 100:6.3f}%")
 
 
 @print_result

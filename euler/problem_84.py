@@ -166,19 +166,24 @@ def get_chance_weights(ch_sq: Square) -> Dict[Square, Fraction]:
         ch_sq.find_next("R"): prob(2),  # next railroad (x 2)
         ch_sq.find_next("U"): prob(1),  # next utility
         ch_sq.move(-3): prob(1),  # back 3 spaces
+        ch_sq: prob(CH_CARDS - 4 - len(direct)),  # stay on current square
         **{sq: prob(1) for sq in direct},  # direct to square
     }
 
 
-def get_community_chest_weights() -> Dict[Square, Fraction]:
+def get_community_chest_weights(cc_sq: Square) -> Dict[Square, Fraction]:
     """Build probability map for all possible destination squares from community chest."""
+    assert cc_sq.group == "CC"
 
     def prob(count: int) -> Fraction:
         # 16 is number of chance cards
         return Fraction(numerator=count, denominator=CC_CARDS)
 
     direct = [GO, JAIL]
-    return {sq: prob(1) for sq in direct}
+    return {
+        cc_sq: prob(CC_CARDS - len(direct)),  # stay on current square
+        **{sq: prob(1) for sq in direct},  # direct to square
+    }
 
 
 ROLL_WEIGHTS = get_roll_weights()
@@ -210,7 +215,7 @@ def generate_all_weights() -> Dict[Square, Dict[Square, Fraction]]:
             if sq.group == "CH":
                 draws = get_chance_weights(sq)
             else:
-                draws = get_community_chest_weights()
+                draws = get_community_chest_weights(sq)
             rolls = get_move_weights(sq)
             p_roll = 1 - sum(draws.values())  # type: ignore
             for t_sq in set((*draws.keys(), *rolls.keys())):

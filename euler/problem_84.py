@@ -162,11 +162,18 @@ def get_chance_weights(ch_sq: Square) -> Dict[Square, Fraction]:
         return Fraction(numerator=count, denominator=CH_CARDS)
 
     counts = Counter((GO, JAIL, C1, E3, H2, R1))
+    counts[ch_sq.move(-3)] += 1  # back three spaces
     counts[ch_sq.find_next("R")] += 2  # next railroad (x2)
     counts[ch_sq.find_next("U")] += 1  # next utility
-    counts[ch_sq.move(-3)] += 1  # back three spaces
     counts[ch_sq] = CH_CARDS - sum(counts.values())  # all others stay on square
-    return {key: prob(val) for key, val in counts.items()}
+    weights = {key: prob(val) for key, val in counts.items()}
+    # Handle CC edge case
+    for square in list(weights):
+        if square.group == "CC":
+            w_sq = weights.pop(square)
+            for target, w_t in get_community_chest_weights(square).items():
+                weights[target] = weights.get(target, 0) + w_sq * w_t
+    return weights
 
 
 def get_community_chest_weights(cc_sq: Square) -> Dict[Square, Fraction]:

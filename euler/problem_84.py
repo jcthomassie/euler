@@ -187,7 +187,7 @@ def get_community_chest_weights(cc_sq: Square) -> Dict[Square, Fraction]:
 ROLL_WEIGHTS = get_roll_weights()
 
 
-def get_move_weights(sq: Square, sides: int = 6) -> Dict[Square, Fraction]:
+def get_roll_move_weights(sq: Square, sides: int = 6) -> Dict[Square, Fraction]:
     """Build probability map for dice rolls from the input square."""
     weights: Dict[Square, Fraction] = {}
     weights[JAIL] = p_j = Fraction(numerator=1, denominator=sides ** 3)
@@ -200,29 +200,32 @@ def get_move_weights(sq: Square, sides: int = 6) -> Dict[Square, Fraction]:
     return weights
 
 
-def generate_all_weights() -> Dict[Square, Dict[Square, Fraction]]:
-    """Build complete probability map from each square to all possible targets."""
-    weights: Dict[Square, Dict[Square, Fraction]] = {}
-    for sq in BOARD:
-        w_sq = weights[sq] = {}
-        # Handle Go To Jail
-        if sq is G2J:
-            w_sq[JAIL] = Fraction(1)
-        # Handle card draw squares
-        elif sq.group in ("CC", "CH"):
-            if sq.group == "CH":
-                draws = get_chance_weights(sq)
-            else:
-                draws = get_community_chest_weights(sq)
-            rolls = get_move_weights(sq)
-            p_roll = 1 - sum(draws.values())  # type: ignore
-            for t_sq in set((*draws.keys(), *rolls.keys())):
-                w_sq[t_sq] = draws.get(t_sq, Fraction(0))
-                w_sq[t_sq] += rolls.get(t_sq, 0) * p_roll
-        # Handle normal squares
+def get_final_move_weights(sq: Square, sides: int = 6) -> Dict[Square, Fraction]:
+    """Build probability map for final landing squares from the input square."""
+    # Get raw roll weights
+    weights = get_roll_move_weights(sq, sides=sides)
+    # Redistribute draw squares
+    for square in (CC1, CC2, CC3, CH1, CH2, CH3):
+        w_sq = weights.pop(square, None)
+        if w_sq is None:
+            continue
+        # Get draw destination weights
+        if square.group == "CC":
+            draws = get_community_chest_weights(square)
         else:
-            w_sq.update(get_move_weights(sq))
+            draws = get_chance_weights(square)
+        # Distribute square weight among draws
+        for target, w_t in draws.items():
+            weights[target] = weights.get(target, 0) + w_sq * w_t
+    # Redistribute go-to-jail
+    if G2J in weights:
+        weights[JAIL] = weights.get(JAIL, 0) + weights.pop(G2J)
     return weights
+
+
+def generate_all_weights() -> Dict[Square, Dict[Square, Fraction]]:
+    """Build probability map from each starting square to all possible ending squares."""
+    return {sq: get_final_move_weights(sq) for sq in BOARD if sq != G2J}
 
 
 def print_prob(w: Dict[Square, Fraction]) -> None:

@@ -228,17 +228,36 @@ def generate_all_weights() -> Dict[Square, Dict[Square, Fraction]]:
     return {sq: get_final_move_weights(sq) for sq in BOARD if sq != G2J}
 
 
+MOVE_WEIGHTS = generate_all_weights()
+
+
+def accumulate_weights(turns: int = 1) -> Dict[Square, Fraction]:
+    """Get accumulated weights of all possible final landing squares."""
+    weights = {Square.GO: Fraction(1)}
+    for _ in range(turns):
+        weights_new: Dict[Square, Fraction] = {}
+        for sq_i, w_i in weights.items():
+            for sq_f, w_f in MOVE_WEIGHTS[sq_i].items():
+                weights_new[sq_f] = weights_new.get(sq_f, 0) + w_i * w_f
+        weights = weights_new
+    return weights
+
+
 def print_prob(w: Dict[Square, Fraction]) -> None:
     for sq, p in sorted(w.items(), key=lambda t: t[-1]):
         print(sq, f"\t{float(p) * 100:6.3f}%")
     print("TOTAL", f"\t{float(sum(w.values())) * 100:6.3f}%")
 
 
+def top_squares_modal(w: Dict[Square, Fraction]) -> str:
+    return "".join(f"{sq}" for sq in sorted(w, reverse=True, key=lambda sq: w[sq])[:3])
+
+
 @print_result
 def solve() -> str:
-    w = generate_all_weights()
-    print_prob(w[G1])
-    raise NotImplementedError()
+    w = accumulate_weights(200)
+    print_prob(w)
+    return top_squares_modal(w)
 
 
 if __name__ == "__main__":

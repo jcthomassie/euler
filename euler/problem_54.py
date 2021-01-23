@@ -59,8 +59,7 @@ from __future__ import annotations
 
 import os
 from collections import Counter
-from typing import Counter as CounterType
-from typing import Iterator, Optional, Tuple
+from typing import Iterator, Optional
 
 from . import DATA_DIR
 from .utils import print_result
@@ -140,17 +139,17 @@ class Hand:
     def __init__(self, *cards: Card) -> None:
         # Cards are sorted in descending order; max is always first card
         self.cards = sorted(cards, reverse=True)
-        self._face_counts: Optional[CounterType[int]] = None
-        self._suit_counts: Optional[CounterType[int]] = None
+        self._face_counts: Optional[Counter[int]] = None
+        self._suit_counts: Optional[Counter[int]] = None
 
     @property
-    def face_counts(self) -> CounterType[int]:
+    def face_counts(self) -> Counter[int]:
         if self._face_counts is None:
             self._face_counts = Counter(c.face_value for c in self.cards)
         return self._face_counts
 
     @property
-    def suit_counts(self) -> CounterType[int]:
+    def suit_counts(self) -> Counter[int]:
         if self._suit_counts is None:
             self._suit_counts = Counter(c.suit_value for c in self.cards)
         return self._suit_counts
@@ -274,7 +273,7 @@ class Hand:
         )
 
 
-def scrape_data(path: str) -> Iterator[Tuple[Hand, Hand]]:
+def scrape_data(path: str) -> Iterator[tuple[Hand, Hand]]:
     """Scrape card data from text file and load it into two Hands.
 
     Yields:

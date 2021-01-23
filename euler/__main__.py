@@ -6,7 +6,7 @@ import argparse
 import importlib
 import pkgutil
 import sys
-from typing import List, Optional
+from typing import Optional
 
 import euler
 from euler.scraper import Problem
@@ -39,7 +39,7 @@ def _list(args: argparse.Namespace) -> None:
                 print(name.lstrip("problem_"), end=" ")
 
 
-def main(args: Optional[List[str]] = None) -> int:
+def main(args: Optional[list[str]] = None) -> int:
     if args is None:
         args = sys.argv[1:]
     # Top-level parser

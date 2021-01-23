@@ -37,8 +37,6 @@ trying every route. However, Problem 67, is the same challenge with a triangle
 containing one-hundred rows; it cannot be solved by brute force, and requires a
 clever method! ;o)
 """
-from typing import List
-
 from .utils import print_result
 
 PYRAMID = [
@@ -60,7 +58,7 @@ PYRAMID = [
 ]
 
 
-def max_path_sum(pyramid: List[List[int]]) -> int:
+def max_path_sum(pyramid: list[list[int]]) -> int:
     """Get the sum of the maximum path in the input pyramid."""
     children = None
     for row in pyramid[::-1]:

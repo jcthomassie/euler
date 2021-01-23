@@ -16,8 +16,6 @@ one in value, and containing two digits in the numerator and denominator.
 If the product of these four fractions is given in its lowest common terms, find
 the value of the denominator.
 """
-from typing import Tuple
-
 from .utils import print_result
 
 
@@ -28,7 +26,7 @@ def gcd(a: int, b: int) -> int:
     return a
 
 
-def simplify(a: int, b: int) -> Tuple[int, int]:
+def simplify(a: int, b: int) -> tuple[int, int]:
     """Simplify the fraction a / b by dividing out the GCD."""
     d = gcd(a, b)
     return a // d, b // d

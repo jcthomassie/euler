@@ -14,7 +14,7 @@ Find the lowest sum for a set of five primes for which any two primes
 concatenate to produce another prime.
 """
 from collections import defaultdict
-from typing import DefaultDict, Iterator, Set
+from typing import Iterator
 
 from .utils import is_prime, prime_list, print_result
 
@@ -24,7 +24,7 @@ def concats_prime(m: int, n: int) -> bool:
     return is_prime(int(f"{m}{n}")) and is_prime(int(f"{n}{m}"))
 
 
-def generate_graph(node_max: int) -> DefaultDict[int, Set[int]]:
+def generate_graph(node_max: int) -> defaultdict[int, set[int]]:
     """Build graph of pairs of 'substring' primes in the prime table."""
     graph = defaultdict(set)
     primes = prime_list(node_max)
@@ -39,8 +39,8 @@ def generate_graph(node_max: int) -> DefaultDict[int, Set[int]]:
 
 
 def find_cliques(
-    graph: DefaultDict[int, Set[int]], size: int = 5
-) -> Iterator[Set[int]]:
+    graph: defaultdict[int, set[int]], size: int = 5
+) -> Iterator[set[int]]:
     """Find all cliques of the specified size in the input graph."""
 
     def len_neighbors(n: int) -> int:

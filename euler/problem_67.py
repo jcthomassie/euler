@@ -24,14 +24,13 @@ check one trillion (1012) routes every second it would take over twenty billion
 years to check them all. There is an efficient algorithm to solve it. ;o)
 """
 import os
-from typing import List
 
 from . import DATA_DIR
 from .problem_18 import max_path_sum
 from .utils import print_result
 
 
-def scrape_pyramid(path: str) -> List[List[int]]:
+def scrape_pyramid(path: str) -> list[list[int]]:
     """Scrape pyramid from text file into nested list of integers."""
     with open(path, "r") as h:
         pyramid = []

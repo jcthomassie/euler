@@ -16,13 +16,12 @@ obtain a score of 938 × 53 = 49714.
 What is the total of all the name scores in the file?
 """
 import os
-from typing import List
 
 from . import DATA_DIR
 from .utils import print_result
 
 
-def scrape_names(path: str) -> List[str]:
+def scrape_names(path: str) -> list[str]:
     """Scrape names into a list and sort them."""
     with open(path, "r") as h:
         return sorted(eval(next(h)))

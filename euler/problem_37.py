@@ -14,7 +14,7 @@ right and right to left.
 
 NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
 """
-from typing import Iterator, List
+from typing import Iterator
 
 from .utils import prime_mask, print_result
 
@@ -30,7 +30,7 @@ def truncations(word: str) -> Iterator[str]:
 
 @print_result
 def solve() -> int:
-    results: List[int] = []
+    results: list[int] = []
     primes = prime_mask(MAX)
     for n in range(11, MAX, 2):
         # Check number

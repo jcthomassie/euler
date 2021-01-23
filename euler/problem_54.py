@@ -123,7 +123,7 @@ class Card:
 
     @classmethod
     def from_str(cls, string: str) -> Card:
-        return cls(cls.faces[string[0]], cls.suits[string[-1]],)
+        return cls(cls.faces[string[0]], cls.suits[string[-1]])
 
 
 class Hand:

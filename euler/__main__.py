@@ -43,33 +43,45 @@ def main(args: Optional[List[str]] = None) -> int:
     if args is None:
         args = sys.argv[1:]
     # Top-level parser
-    parser = argparse.ArgumentParser(prog="EULER",)
+    parser = argparse.ArgumentParser(prog="EULER")
     parser.add_argument(
-        "-v", "--verbose", action="store_true", help="print extra information",
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="print extra information",
     )
     subparsers = parser.add_subparsers()
 
     # Solution parser
     parser_solve = subparsers.add_parser(
-        "solve", help="run completed problem solutions",
+        "solve",
+        help="run completed problem solutions",
     )
     parser_solve.add_argument(
-        "problems", type=int, nargs="+", help="problem numbers to run",
+        "problems",
+        type=int,
+        nargs="+",
+        help="problem numbers to run",
     )
     parser_solve.set_defaults(func=_solve)
 
     # Scraper parser
     parser_scrape = subparsers.add_parser(
-        "scrape", help="scrape data for unsolved problems",
+        "scrape",
+        help="scrape data for unsolved problems",
     )
     parser_scrape.add_argument(
-        "problems", type=int, nargs="+", help="problem numbers to scrape",
+        "problems",
+        type=int,
+        nargs="+",
+        help="problem numbers to scrape",
     )
     parser_scrape.set_defaults(func=_scrape)
 
     # List parser
     parser_list = subparsers.add_parser(
-        "list", help="list information about solution modules",
+        "list",
+        help="list information about solution modules",
     )
     parser_list.set_defaults(func=_list)
 

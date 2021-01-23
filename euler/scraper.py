@@ -106,7 +106,10 @@ class Problem:
             lines.append("")
             lines.extend(
                 textwrap.wrap(
-                    block, expand_tabs=True, break_long_words=False, width=80,
+                    block,
+                    expand_tabs=True,
+                    break_long_words=False,
+                    width=80,
                 )
             )
         return "\n".join(lines)

@@ -16,7 +16,7 @@ AUTHOR_EMAIL = "julianthomassie@gmail.com"
 DESCRIPTION = "Python implementations of Project Euler solutions."
 URL = "https://github.com/jcthomassie/euler"
 
-REQUIRES_PYTHON = "3.9"
+REQUIRES_PYTHON = ">=3.9"
 REQUIRES = [
     "numpy",
     "pyperclip",

@@ -1,8 +1,11 @@
 import time
 import warnings
+from typing import Optional
+
+from euler.utils import SolutionType, Solver
 
 
-def validate_solution(solve, answer=None):
+def validate_solution(solve: Solver, answer: Optional[SolutionType] = None) -> None:
     # Compute solution
     try:
         start = time.perf_counter()

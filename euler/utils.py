@@ -9,10 +9,10 @@ import numpy as np
 import pyperclip
 
 SolutionType = Union[int, str]
-F = TypeVar("F", bound=Callable[..., SolutionType])
+Solver = TypeVar("Solver", bound=Callable[..., SolutionType])
 
 
-def print_result(func: F, verbose: bool = False) -> F:
+def print_result(func: Solver, verbose: bool = False) -> Solver:
     """
     Time the function call; print the call syntax, runtime, and result after
     call finishes before returning the result.
@@ -31,7 +31,7 @@ def print_result(func: F, verbose: bool = False) -> F:
         pyperclip.copy(str(res))
         return res
 
-    return cast(F, wrapper)
+    return cast(Solver, wrapper)
 
 
 ###############################################################################

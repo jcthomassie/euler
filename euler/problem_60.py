@@ -62,7 +62,7 @@ def find_cliques(
 @print_result
 def solve() -> int:
     graph = generate_graph(10_000)
-    return sum(min(find_cliques(graph, size=5), key=sum))
+    return sum(min(find_cliques(graph, size=5), key=sum))  # type: ignore
 
 
 if __name__ == "__main__":

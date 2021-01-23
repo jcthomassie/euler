@@ -77,7 +77,7 @@ def a_star(
     scores = defaultdict(lambda: math.inf)
     scores[start] = array[start[0], start[1]]
     while candidates:
-        node = min(candidates, key=lambda n: scores[n])
+        node = min(candidates, key=scores.__getitem__)
         # Return path weights if reached end
         if node == end:
             path = [array[node[0], node[1]]]

@@ -3,15 +3,16 @@
 import functools
 import math
 import time
-from typing import Any, Callable, Generator, Iterator, List, Tuple, Union
+from typing import Any, Callable, Iterator, TypeVar, Union, cast
 
 import numpy as np
 import pyperclip
 
 SolutionType = Union[int, str]
+F = TypeVar("F", bound=Callable[..., SolutionType])
 
 
-def print_result(func: Callable[..., SolutionType], verbose: bool = False) -> Callable:
+def print_result(func: F, verbose: bool = False) -> F:
     """
     Time the function call; print the call syntax, runtime, and result after
     call finishes before returning the result.
@@ -30,7 +31,7 @@ def print_result(func: Callable[..., SolutionType], verbose: bool = False) -> Ca
         pyperclip.copy(str(res))
         return res
 
-    return wrapper
+    return cast(F, wrapper)
 
 
 ###############################################################################
@@ -50,7 +51,7 @@ def prime_mask(n: int) -> np.array:
     return primes
 
 
-def prime_list(n: int) -> List[int]:
+def prime_list(n: int) -> list[int]:
     """Generate a list of all primes below the input number."""
     mask = prime_mask(n)
     if n <= 2:
@@ -74,7 +75,7 @@ def is_prime(n: int) -> bool:
 ###############################################################################
 # COPRIMES
 ##############################################################################
-def _coprime_children(m: int, n: int, stop: int) -> Iterator[Tuple[int, int]]:
+def _coprime_children(m: int, n: int, stop: int) -> Iterator[tuple[int, int]]:
     """
     https://en.wikipedia.org/wiki/Coprime_integers#Generating_all_coprime_pairs
     """
@@ -85,17 +86,17 @@ def _coprime_children(m: int, n: int, stop: int) -> Iterator[Tuple[int, int]]:
         yield from _coprime_children(m + 2 * n, n, stop)
 
 
-def coprimes_odd_odd(stop: int) -> List[Tuple[int, int]]:
+def coprimes_odd_odd(stop: int) -> list[tuple[int, int]]:
     """Generate all odd coprime pairs `(m, n)` where `stop >= m > n`."""
     return list(_coprime_children(3, 1, stop))
 
 
-def coprimes_odd_even(stop: int) -> List[Tuple[int, int]]:
+def coprimes_odd_even(stop: int) -> list[tuple[int, int]]:
     """Generate all odd, even coprime pairs `(m, n)` where `stop >= m > n`."""
     return list(_coprime_children(2, 1, stop))
 
 
-def coprimes(stop: int) -> List[Tuple[int, int]]:
+def coprimes(stop: int) -> list[tuple[int, int]]:
     """Generate all coprime pairs `(m, n)` where `stop >= m > n`."""
     return [
         *_coprime_children(3, 1, stop),
@@ -106,8 +107,8 @@ def coprimes(stop: int) -> List[Tuple[int, int]]:
 ###############################################################################
 # TRIANGLES
 ###############################################################################
-Triangle = Tuple[int, int, int]
-TriangleGenerator = Generator[Triangle, None, None]
+Triangle = tuple[int, int, int]
+TriangleGenerator = Iterator[Triangle]
 
 
 def euclid(m: int, n: int) -> Triangle:

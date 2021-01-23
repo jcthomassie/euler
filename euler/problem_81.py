@@ -24,7 +24,7 @@ right and down in matrix.txt, a 31K text file containing an 80 by 80 matrix.
 import math
 import os
 from collections import defaultdict
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 import numpy as np
 
@@ -51,15 +51,15 @@ def scrape_array(path: str) -> np.array:
     return np.array(matrix)
 
 
-Node = Tuple[int, int]
+Node = tuple[int, int]
 
 
 def a_star(
     array: np.array,
     start: Optional[Node] = None,
     end: Optional[Node] = None,
-    neighbors: Optional[Tuple[Node, ...]] = None,
-) -> List[int]:
+    neighbors: Optional[tuple[Node, ...]] = None,
+) -> list[int]:
     """
     Find the optimal path through the input array of node weights using the
     A* algorithm.
@@ -72,12 +72,12 @@ def a_star(
         neighbors = ((1, 0), (0, 1), (-1, 0), (0, -1))
 
     candidates = set([start])
-    parents: Dict[Node, Node] = dict()
+    parents: dict[Node, Node] = dict()
     # Best known scores
     scores = defaultdict(lambda: math.inf)
     scores[start] = array[start[0], start[1]]
     while candidates:
-        node = min(candidates, key=lambda n: scores[n])
+        node = min(candidates, key=scores.__getitem__)
         # Return path weights if reached end
         if node == end:
             path = [array[node[0], node[1]]]

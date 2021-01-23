@@ -27,7 +27,6 @@ Find the minimal path sum from the left column to the right column in matrix.txt
 import math
 import os
 from collections import defaultdict
-from typing import DefaultDict, Dict, List
 
 import numpy as np
 
@@ -36,7 +35,7 @@ from .problem_81 import Node, scrape_array
 from .utils import print_result
 
 
-def modified_a_star(array: np.ndarray) -> List[int]:
+def modified_a_star(array: np.ndarray) -> list[int]:
     """
     Find the optimal path sum through the input array of node weights using the
     A* algorithm. Modified so that any node on left column can be the start
@@ -46,9 +45,9 @@ def modified_a_star(array: np.ndarray) -> List[int]:
     start = (-1, -1)
     deltas = ((1, 0), (0, 1), (-1, 0))
     candidates = set([start])
-    parents: Dict[Node, Node] = dict()
+    parents: dict[Node, Node] = dict()
     # Best known scores
-    scores: DefaultDict[Node, float] = defaultdict(lambda: math.inf)
+    scores: defaultdict[Node, float] = defaultdict(lambda: math.inf)
     scores[start] = 0
     while candidates:
         node = min(candidates, key=lambda n: scores[n])

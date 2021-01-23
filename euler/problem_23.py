@@ -22,13 +22,11 @@ than this limit.
 Find the sum of all the positive integers which cannot be written as the sum of
 two abundant numbers.
 """
-from typing import List, Set
-
 from .problem_21 import divisor_sums
 from .utils import print_result
 
 
-def abundant_numbers(n: int) -> List[int]:
+def abundant_numbers(n: int) -> list[int]:
     """Get all abundant numbers below n."""
     abundant = []
     for a, b in enumerate(divisor_sums(n)):
@@ -37,7 +35,7 @@ def abundant_numbers(n: int) -> List[int]:
     return abundant
 
 
-def abundant_sums(n: int) -> Set[int]:
+def abundant_sums(n: int) -> set[int]:
     """Get all integers below n that can be written as the sum of two abundant numbers."""
     abundant = abundant_numbers(n)
     sums = set()

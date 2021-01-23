@@ -19,7 +19,6 @@ Find the first four consecutive integers to have four distinct prime factors
 each. What is the first of these numbers?
 """
 from functools import lru_cache
-from typing import Tuple
 
 from .utils import prime_mask, print_result
 
@@ -32,7 +31,7 @@ def solve() -> int:
     primes = [2, *(i for i in range(3, MAX, 2) if mask[i])]
 
     @lru_cache
-    def prime_factors(n: int) -> Tuple[int, ...]:
+    def prime_factors(n: int) -> tuple[int, ...]:
         """Compute the prime factors of the input integer."""
         if mask[n] or n == 1:
             return (n,)

@@ -50,7 +50,7 @@ def solve() -> int:
     }
     values = {key: next(generator) for key, generator in generators.items()}
     while not values["t"] == values["p"] == values["h"]:
-        smallest = min(values, key=values.get)
+        smallest = min(values, key=values.__getitem__)
         values[smallest] = next(generators[smallest])
     return values["t"]
 

@@ -2,7 +2,7 @@
 """Implements programmatic scraping of problems from https://projecteuler.net"""
 import os
 import textwrap
-from typing import List, Optional
+from typing import Optional
 
 import requests
 from bs4 import BeautifulSoup
@@ -69,7 +69,7 @@ class Problem:
             self._soup = BeautifulSoup(response.text, "html.parser")
         return self._soup
 
-    def get_data_links(self) -> List[str]:
+    def get_data_links(self) -> list[str]:
         """Get urls for associated problem data."""
         links = []
         for link in self.soup.find_all("a"):
@@ -106,7 +106,10 @@ class Problem:
             lines.append("")
             lines.extend(
                 textwrap.wrap(
-                    block, expand_tabs=True, break_long_words=False, width=80,
+                    block,
+                    expand_tabs=True,
+                    break_long_words=False,
+                    width=80,
                 )
             )
         return "\n".join(lines)
@@ -133,7 +136,7 @@ class Problem:
             h.write(_TEST_FILE_TEMPLATE.format(self.number))
             return self.test_module_path
 
-    def download_files(self) -> List[str]:
+    def download_files(self) -> list[str]:
         """Download any associated data files for the problem.
 
         Skips any files that have already been downloaded.
@@ -154,7 +157,7 @@ class Problem:
             downloads.append(path)
         return downloads
 
-    def scrape(self) -> List[str]:
+    def scrape(self) -> list[str]:
         """Scrape problem data, create python module, and copy any associated files.
 
         Returns:

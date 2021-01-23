@@ -16,7 +16,7 @@ AUTHOR_EMAIL = "julianthomassie@gmail.com"
 DESCRIPTION = "Python implementations of Project Euler solutions."
 URL = "https://github.com/jcthomassie/euler"
 
-REQUIRES_PYTHON = ">=3.6"
+REQUIRES_PYTHON = ">=3.9"
 REQUIRES = [
     "numpy",
     "pyperclip",
@@ -63,7 +63,6 @@ if __name__ == "__main__":
         classifiers=[
             "Programming Language :: Python",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 3.6",
-            "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3.9",
         ],
     )

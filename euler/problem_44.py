@@ -17,7 +17,6 @@ difference are pentagonal and D = |Pk − Pj| is minimised; what is the value of
 D?
 """
 import math
-from typing import List
 
 from .problem_45 import generate_pentagonals
 from .utils import print_result
@@ -37,7 +36,7 @@ def is_pentagonal(p: int) -> int:
 
 @print_result
 def solve() -> int:
-    pentagonals: List[int] = []
+    pentagonals: list[int] = []
     for p_j in generate_pentagonals(1):
         for p_k in pentagonals:
             if is_pentagonal(p_j + p_k) and is_pentagonal(p_j - p_k):

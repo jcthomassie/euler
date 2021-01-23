@@ -3,15 +3,16 @@
 import functools
 import math
 import time
-from typing import Any, Callable, Iterator, Union
+from typing import Any, Callable, Iterator, TypeVar, Union, cast
 
 import numpy as np
 import pyperclip
 
 SolutionType = Union[int, str]
+F = TypeVar("F", bound=Callable[..., SolutionType])
 
 
-def print_result(func: Callable[..., SolutionType], verbose: bool = False) -> Callable:
+def print_result(func: F, verbose: bool = False) -> F:
     """
     Time the function call; print the call syntax, runtime, and result after
     call finishes before returning the result.
@@ -30,7 +31,7 @@ def print_result(func: Callable[..., SolutionType], verbose: bool = False) -> Ca
         pyperclip.copy(str(res))
         return res
 
-    return wrapper
+    return cast(F, wrapper)
 
 
 ###############################################################################

@@ -58,13 +58,23 @@ How many hands does Player 1 win?
 from __future__ import annotations
 
 from collections import Counter
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Iterator, Optional
 
 from . import DATA_DIR
 from .utils import print_result
 
+# Suit values
+SUITS = {char: val for val, char in enumerate("CDHS")}
+SUITS_INV = {val: char for char, val in SUITS.items()}
 
+# Face values
+FACES = {char: val for val, char in enumerate("23456789TJQKA")}
+FACES_INV = {val: char for char, val in FACES.items()}
+
+
+@dataclass(frozen=True, eq=True, repr=True)
 class Card:
     """Playing card representation.
 
@@ -72,25 +82,8 @@ class Card:
     representation.
     """
 
-    # Suit values
-    suits = {char: val for val, char in enumerate("CDHS")}
-    suits_inv = {val: char for char, val in suits.items()}
-    # Face values
-    faces = {char: val for val, char in enumerate("23456789TJQKA")}
-    faces_inv = {val: char for char, val in faces.items()}
-
-    __slots__ = ("face_value", "suit_value")
-
-    def __init__(self, face_value: int, suit_value: int) -> None:
-        self.face_value = face_value
-        self.suit_value = suit_value
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Card):
-            return NotImplemented
-        return (
-            self.face_value == other.face_value and self.suit_value == other.suit_value
-        )
+    face: int
+    suit: int
 
     def __gt__(self, other: object) -> bool:
         if other is None:
@@ -98,9 +91,7 @@ class Card:
         if not isinstance(other, Card):
             return NotImplemented
         return (
-            self.face_value > other.face_value
-            or self.face_value == other.face_value
-            and self.suit_value > other.suit_value
+            self.face > other.face or self.face == other.face and self.suit > other.suit
         )
 
     def __lt__(self, other: object) -> bool:
@@ -109,20 +100,15 @@ class Card:
         if not isinstance(other, Card):
             return NotImplemented
         return (
-            self.face_value < other.face_value
-            or self.face_value == other.face_value
-            and self.suit_value < other.suit_value
+            self.face < other.face or self.face == other.face and self.suit < other.suit
         )
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}" f"({self.face_value}, {self.suit_value})"
-
     def __str__(self) -> str:
-        return f"{self.faces_inv[self.face_value]}" f"{self.suits_inv[self.suit_value]}"
+        return f"{FACES_INV[self.face]}{SUITS_INV[self.suit]}"
 
     @classmethod
     def from_str(cls, string: str) -> Card:
-        return cls(cls.faces[string[0]], cls.suits[string[-1]])
+        return cls(FACES[string[0]], SUITS[string[-1]])
 
 
 class Hand:
@@ -131,8 +117,8 @@ class Hand:
     Contains a list of 5 Card objects. Allows ordering operations between hands.
     """
 
-    _faces_descending = range(len(Card.faces))[::-1]
-    _suits_descending = range(len(Card.suits))[::-1]
+    _faces_descending = range(len(FACES))[::-1]
+    _suits_descending = range(len(SUITS))[::-1]
 
     __slots__ = ("cards", "_face_counts", "_suit_counts")
 
@@ -145,13 +131,13 @@ class Hand:
     @property
     def face_counts(self) -> Counter[int]:
         if self._face_counts is None:
-            self._face_counts = Counter(c.face_value for c in self.cards)
+            self._face_counts = Counter(c.face for c in self.cards)
         return self._face_counts
 
     @property
     def suit_counts(self) -> Counter[int]:
         if self._suit_counts is None:
-            self._suit_counts = Counter(c.suit_value for c in self.cards)
+            self._suit_counts = Counter(c.suit for c in self.cards)
         return self._suit_counts
 
     def get_where(
@@ -163,8 +149,8 @@ class Hand:
             Matches in descending order.
         """
         for card in self.cards:
-            if (face is None or card.face_value == face) and (
-                suit is None or card.suit_value == suit
+            if (face is None or card.face == face) and (
+                suit is None or card.suit == suit
             ):
                 yield card
 
@@ -190,7 +176,7 @@ class Hand:
         return None
 
     def eval_straight(self) -> Optional[Card]:
-        faces = sorted((c.face_value for c in self.cards), reverse=True)
+        faces = sorted((c.face for c in self.cards), reverse=True)
         for a, b in zip(faces, faces[1:]):
             if b != (a - 1):
                 return None
@@ -221,7 +207,7 @@ class Hand:
 
     def eval_royal_flush(self) -> Optional[Card]:
         if self.eval_straight_flush():
-            if self.cards[0].face_value == Card.faces["A"]:
+            if self.cards[0].face == FACES["A"]:
                 return self.cards[0]
         return None
 

@@ -35,7 +35,7 @@ _TEST_FILE_TEMPLATE = """from euler.problem_{} import solve
 from .utils import validate_solution
 
 
-def test_solution():
+def test_solution() -> None:
     validate_solution(solve, answer=None)
 """
 

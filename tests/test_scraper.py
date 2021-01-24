@@ -94,12 +94,12 @@ class TestProblem:
     def test_module_path(self, problem: Problem) -> None:
         import euler.problem_1
 
-        assert problem.module_path == euler.problem_1.__file__
+        assert problem.module_path == Path(euler.problem_1.__file__)
 
     def test_test_module_path(self, problem: Problem) -> None:
         import tests.test_problem_1
 
-        assert problem.test_module_path == tests.test_problem_1.__file__
+        assert problem.test_module_path == Path(tests.test_problem_1.__file__)
 
     def test_get_title(self, problem: Problem) -> None:
         assert problem.get_title() == PROBLEM_TITLE

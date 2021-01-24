@@ -24,8 +24,6 @@ Find the minimal path sum from the top left to the bottom right by moving left,
 right, up, and down in matrix.txt (right click and "Save Link/Target As..."), a
 31K text file containing an 80 by 80 matrix.
 """
-import os
-
 from . import DATA_DIR
 from .problem_81 import a_star, scrape_array
 from .utils import print_result
@@ -33,7 +31,7 @@ from .utils import print_result
 
 @print_result
 def solve() -> int:
-    return sum(a_star(scrape_array(os.path.join(DATA_DIR, "p083_matrix.txt"))))
+    return sum(a_star(scrape_array(DATA_DIR / "p083_matrix.txt")))
 
 
 if __name__ == "__main__":

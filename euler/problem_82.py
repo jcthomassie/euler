@@ -25,7 +25,6 @@ Find the minimal path sum from the left column to the right column in matrix.txt
 80 matrix.
 """
 import math
-import os
 from collections import defaultdict
 
 import numpy as np
@@ -87,7 +86,7 @@ def modified_a_star(array: np.ndarray) -> list[int]:
 
 @print_result
 def solve() -> int:
-    return sum(modified_a_star(scrape_array(os.path.join(DATA_DIR, "p082_matrix.txt"))))
+    return sum(modified_a_star(scrape_array(DATA_DIR / "p082_matrix.txt")))
 
 
 if __name__ == "__main__":

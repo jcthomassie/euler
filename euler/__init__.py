@@ -5,6 +5,6 @@ https://projecteuler.net/
 """
 __version__ = "0.3.1"
 
-import os
+from pathlib import Path
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+DATA_DIR = Path(__file__).parent / "data"

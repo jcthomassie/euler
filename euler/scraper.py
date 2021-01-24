@@ -2,19 +2,13 @@
 """Implements programmatic scraping of problems from https://projecteuler.net"""
 import os
 import textwrap
+from pathlib import Path
 from typing import Optional
 
 import requests
 from bs4 import BeautifulSoup
 
-_OUTDIR = os.path.dirname(__file__)
-
-_URL_TEMPLATE = "https://projecteuler.net/problem={}"
-_PATH_TEMPLATE = os.path.join(_OUTDIR, "problem_{}.py")
-_TEST_PATH_TEMPLATE = os.path.join(
-    os.path.dirname(_OUTDIR), "tests", "test_problem_{}.py"
-)
-_DATA_TEMPLATE = os.path.join(_OUTDIR, "data", "{}")
+_OUTDIR = Path(__file__).parent
 _FILE_TEMPLATE = '''# -*- coding: utf-8 -*-
 """
 {}
@@ -52,15 +46,15 @@ class Problem:
 
     @property
     def source_url(self) -> str:
-        return _URL_TEMPLATE.format(self.number)
+        return f"https://projecteuler.net/problem={self.number}"
 
     @property
-    def module_path(self) -> str:
-        return _PATH_TEMPLATE.format(self.number)
+    def module_path(self) -> Path:
+        return _OUTDIR / f"problem_{self.number}.py"
 
     @property
-    def test_module_path(self) -> str:
-        return _TEST_PATH_TEMPLATE.format(self.number)
+    def test_module_path(self) -> Path:
+        return _OUTDIR.parent / "tests" / f"test_problem_{self.number}.py"
 
     @property
     def soup(self) -> BeautifulSoup:
@@ -114,29 +108,29 @@ class Problem:
             )
         return "\n".join(lines)
 
-    def create_module(self) -> Optional[str]:
+    def create_module(self) -> Optional[Path]:
         """Create a python module for the problem.
 
         Does nothing if the module already exists.
         """
-        if os.path.isfile(self.module_path):
+        if self.module_path.exists():
             return None
-        with open(self.module_path, "w", encoding="utf-8") as h:
+        with self.module_path.open("w", encoding="utf-8") as h:
             h.write(_FILE_TEMPLATE.format(self.module_docstring()))
             return self.module_path
 
-    def create_test_module(self) -> Optional[str]:
+    def create_test_module(self) -> Optional[Path]:
         """Create a python module for testing the problem.
 
         Does nothing if the module already exists.
         """
-        if os.path.isfile(self.test_module_path):
+        if self.test_module_path.exists():
             return None
-        with open(self.test_module_path, "w", encoding="utf-8") as h:
+        with self.test_module_path.open("w", encoding="utf-8") as h:
             h.write(_TEST_FILE_TEMPLATE.format(self.number))
             return self.test_module_path
 
-    def download_files(self) -> list[str]:
+    def download_files(self) -> list[Path]:
         """Download any associated data files for the problem.
 
         Skips any files that have already been downloaded.
@@ -147,8 +141,8 @@ class Problem:
         downloads = []
         for url in self.get_data_links():
             # Get local path
-            path = _DATA_TEMPLATE.format(os.path.basename(url))
-            if os.path.isfile(path):
+            path = _OUTDIR / "data" / os.path.basename(url)
+            if path.exists():
                 continue
             # Copy data from url
             data = requests.get(url)
@@ -157,7 +151,7 @@ class Problem:
             downloads.append(path)
         return downloads
 
-    def scrape(self) -> list[str]:
+    def scrape(self) -> list[Path]:
         """Scrape problem data, create python module, and copy any associated files.
 
         Returns:

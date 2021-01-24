@@ -15,15 +15,15 @@ obtain a score of 938 × 53 = 49714.
 
 What is the total of all the name scores in the file?
 """
-import os
+from pathlib import Path
 
 from . import DATA_DIR
 from .utils import print_result
 
 
-def scrape_names(path: str) -> list[str]:
+def scrape_names(path: Path) -> list[str]:
     """Scrape names into a list and sort them."""
-    with open(path, "r") as h:
+    with path.open() as h:
         return sorted(eval(next(h)))
 
 
@@ -34,11 +34,10 @@ def name_score(name: str) -> int:
 
 @print_result
 def solve() -> int:
-    path = os.path.join(DATA_DIR, "p022_names.txt")
-    total = 0
-    for i, name in enumerate(scrape_names(path), start=1):
-        total += i * name_score(name)
-    return total
+    return sum(
+        i * name_score(name)
+        for i, name in enumerate(scrape_names(DATA_DIR / "p022_names.txt"), start=1)
+    )
 
 
 if __name__ == "__main__":

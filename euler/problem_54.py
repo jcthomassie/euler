@@ -57,8 +57,8 @@ How many hands does Player 1 win?
 """
 from __future__ import annotations
 
-import os
 from collections import Counter
+from pathlib import Path
 from typing import Iterator, Optional
 
 from . import DATA_DIR
@@ -273,13 +273,13 @@ class Hand:
         )
 
 
-def scrape_data(path: str) -> Iterator[tuple[Hand, Hand]]:
+def scrape_data(path: Path) -> Iterator[tuple[Hand, Hand]]:
     """Scrape card data from text file and load it into two Hands.
 
     Yields:
         Pair of hands for one round.
     """
-    with open(path, "r") as h:
+    with path.open() as h:
         for line in h:
             cards = [Card.from_str(card_str) for card_str in line.strip().split()]
             yield Hand(*cards[:5]), Hand(*cards[5:])
@@ -287,9 +287,8 @@ def scrape_data(path: str) -> Iterator[tuple[Hand, Hand]]:
 
 @print_result
 def solve() -> int:
-    path = os.path.join(DATA_DIR, "p054_poker.txt")
     scores = [0, 0]
-    for p1_hand, p2_hand in scrape_data(path):
+    for p1_hand, p2_hand in scrape_data(DATA_DIR / "p054_poker.txt"):
         if p1_hand > p2_hand:
             scores[0] += 1
         else:

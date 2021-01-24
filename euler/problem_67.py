@@ -23,16 +23,16 @@ try every route to solve this problem, as there are 299 altogether! If you could
 check one trillion (1012) routes every second it would take over twenty billion
 years to check them all. There is an efficient algorithm to solve it. ;o)
 """
-import os
+from pathlib import Path
 
 from . import DATA_DIR
 from .problem_18 import max_path_sum
 from .utils import print_result
 
 
-def scrape_pyramid(path: str) -> list[list[int]]:
+def scrape_pyramid(path: Path) -> list[list[int]]:
     """Scrape pyramid from text file into nested list of integers."""
-    with open(path, "r") as h:
+    with path.open() as h:
         pyramid = []
         for line in h:
             pyramid.append([int(node) for node in line.strip().split()])
@@ -41,9 +41,7 @@ def scrape_pyramid(path: str) -> list[list[int]]:
 
 @print_result
 def solve() -> int:
-    path = os.path.join(DATA_DIR, "p067_triangle.txt")
-    pyramid = scrape_pyramid(path)
-    return max_path_sum(pyramid)
+    return max_path_sum(scrape_pyramid(DATA_DIR / "p067_triangle.txt"))
 
 
 if __name__ == "__main__":

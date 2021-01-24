@@ -1,11 +1,14 @@
+from pathlib import Path
 from typing import Iterator
 
 import pytest
 import requests_mock
+from pytest_mock import MockerFixture
 
 from euler.scraper import Problem
 
 PROBLEM = 1
+PROBLEM_TITLE = "Multiples of 3 and 5"
 PROBLEM_URL = "https://projecteuler.net/problem=1"
 PROBLEM_HTML = """<!DOCTYPE html>
 <html lang="en">
@@ -97,3 +100,28 @@ class TestProblem:
         import tests.test_problem_1
 
         assert problem.test_module_path == tests.test_problem_1.__file__
+
+    def test_get_title(self, problem: Problem) -> None:
+        assert problem.get_title() == PROBLEM_TITLE
+
+    def test_create_module(
+        self, problem: Problem, mocker: MockerFixture, tmp_path: Path
+    ) -> None:
+        out = tmp_path / "problem.py"
+        mocker.patch(
+            "euler.scraper.Problem.module_path",
+            new=mocker.PropertyMock(return_value=out),
+        )
+        problem.create_module()
+        assert out.is_file()
+
+    def test_create_test_module(
+        self, problem: Problem, mocker: MockerFixture, tmp_path: Path
+    ) -> None:
+        out = tmp_path / "test_problem.py"
+        mocker.patch(
+            "euler.scraper.Problem.test_module_path",
+            new=mocker.PropertyMock(return_value=out),
+        )
+        problem.create_test_module()
+        assert out.is_file()

@@ -59,7 +59,7 @@ from __future__ import annotations
 
 from collections import Counter
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Callable, Iterator, Optional
 
 from . import DATA_DIR
 from .utils import print_result
@@ -225,7 +225,7 @@ class Hand:
                 return self.cards[0]
         return None
 
-    hierarchy = [
+    hierarchy: list[Callable[[Hand], Optional[Card]]] = [
         eval_royal_flush,
         eval_straight_flush,
         eval_four_of_a_kind,
@@ -265,12 +265,10 @@ class Hand:
         return bool(self.cards)
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}" f"({' '.join(str(c) for c in self.cards)})"
+        return f"{self.__class__.__name__}({' '.join(str(c) for c in self.cards)})"
 
     def __repr__(self) -> str:
-        return (
-            f"{self.__class__.__name__}" f"({', '.join(repr(c) for c in self.cards)})"
-        )
+        return f"{self.__class__.__name__}({', '.join(repr(c) for c in self.cards)})"
 
 
 def scrape_data(path: Path) -> Iterator[tuple[Hand, Hand]]:

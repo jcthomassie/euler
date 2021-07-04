@@ -42,7 +42,7 @@ TEST = np.array(
 )
 
 
-def scrape_array(path: Path) -> np.array:
+def scrape_array(path: Path) -> np.ndarray:
     """Scrape array from text file."""
     with path.open() as h:
         matrix = []
@@ -55,7 +55,7 @@ Node = tuple[int, int]
 
 
 def a_star(
-    array: np.array,
+    array: np.ndarray,
     start: Optional[Node] = None,
     end: Optional[Node] = None,
     neighbors: Optional[tuple[Node, ...]] = None,

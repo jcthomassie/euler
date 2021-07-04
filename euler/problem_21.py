@@ -19,7 +19,7 @@ import numpy as np
 from .utils import print_result
 
 
-def divisor_sums(n: int) -> np.array:
+def divisor_sums(n: int) -> np.ndarray:
     """Generate a flat array of sums of proper divisors of numbers less than n."""
     sums = np.zeros(n, dtype=int)
     for i in range(1, n):

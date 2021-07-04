@@ -40,7 +40,7 @@ def func(n: int, a: int, b: int) -> int:
 
 
 @functools.lru_cache
-def primes() -> np.array:
+def primes() -> np.ndarray:
     return prime_mask(func(1000, 1000, 1000))
 
 

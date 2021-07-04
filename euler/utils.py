@@ -37,7 +37,7 @@ def print_result(func: Solver, verbose: bool = False) -> Solver:
 ###############################################################################
 # PRIMES
 ###############################################################################
-def prime_mask(n: int) -> np.array:
+def prime_mask(n: int) -> np.ndarray:
     """Generate boolean array of length N, where prime indices are True."""
     primes = np.ones(n, dtype=bool)
     primes[:2] = False

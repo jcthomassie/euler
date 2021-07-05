@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "euler"
+version = "0.4.0"
+description = "Python implementations of Project Euler solutions."
+authors = ["Julian Thomassie <julianthomassie@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/jcthomassie/euler"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "^1.21.0"
+pyperclip = "^1.8.2"
+requests = "^2.25.1"
+beautifulsoup4 = "^4.9.3"
+
+[tool.poetry.dev-dependencies]
+black = "^21.6b0"
+isort = "^5.9.1"
+flake8 = "^3.9.2"
+mypy = "^0.910"
+types-requests = "^2.25.0"
+pytest = "^6.2.4"
+pytest-cov = "^2.12.1"
+pytest-mock = "^3.6.1"
+requests-mock = "^1.9.3"
+
+[tool.poetry.scripts]
+euler = 'euler.__main__:main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+
+[tool.flake8]
+ignore = "E203, E266, E501, W503"
+max-line-length = 88
+max-complexity = 18
+select = "B,C,E,F,W,T4,B9"
+
+[tool.mypy]
+ignore_missing_imports = true
+python_version = 3.9
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
+allow_untyped_defs = false

@@ -9,17 +9,10 @@ solutions is included in the euler/data directory.
 
 ## Installation
 
-Clone the repository:
+Install using [poetry](https://python-poetry.org/docs/#installation):
 
 ```console
-$ git clone https://<USERNAME>@github.com/jcthomassie/euler.git
-```
-
-Install the package and all requirements for development:
-
-```console
-$ pip install -r requirements.txt
-$ pip install -e .[dev]
+$ poetry install
 ```
 
 **Note**: The solve function automatically copies the solution value to your clipboard using [pyperclip](https://pypi.org/project/pyperclip/). If you are on Linux, [xclip](http://manpages.ubuntu.com/manpages/xenial/man1/xclip.1.html) is required for this functionality to work.

@@ -36,7 +36,7 @@ from .utils import prime_mask, print_result
 
 
 def func(n: int, a: int, b: int) -> int:
-    return n ** 2 + a * n + b
+    return n**2 + a * n + b
 
 
 @functools.lru_cache

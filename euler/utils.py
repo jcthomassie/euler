@@ -28,7 +28,8 @@ def print_result(func: Solver, verbose: bool = False) -> Solver:
         f_repr = f"{func.__module__}.{func.__name__}({','.join(params)})"
         print(f"[{t_1 - t_0:.5f} sec]\t", f_repr, "\t=", res)
         # Copy result to clipboard
-        pyperclip.copy(str(res))
+        if pyperclip.is_available():
+            pyperclip.copy(str(res))
         return res
 
     return cast(Solver, wrapper)
@@ -118,8 +119,8 @@ def euclid(m: int, n: int) -> Triangle:
 
     https://en.wikipedia.org/wiki/Formulas_for_generating_Pythagorean_triples
     """
-    m2 = m ** 2
-    n2 = n ** 2
+    m2 = m**2
+    n2 = n**2
     return (
         m2 - n2,  # A
         2 * m * n,  # B

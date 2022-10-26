@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 """Shared utility functions."""
+import atexit
 import functools
 import math
 import time
+import warnings
+from pathlib import Path
 from typing import Any, Callable, Iterator, TypeVar, Union, cast
 
 import numpy as np
+import numpy.typing as npt
 import pyperclip
 
 SolutionType = Union[int, str]
@@ -38,18 +42,55 @@ def print_result(func: Solver, verbose: bool = False) -> Solver:
 ###############################################################################
 # PRIMES
 ###############################################################################
+CACHE_DIR = Path(__file__).parent / "cache"
+CACHE_IGNORE = CACHE_DIR / ".gitignore"
+CACHE_PRIMES = CACHE_DIR / ".primes.npy"
+_PRIME_MASK: npt.NDArray[np.bool_] | None = None
+_PRIME_MASK_CHANGED = False
+
+
+def _cache_init() -> None:
+    CACHE_DIR.mkdir(exist_ok=True)
+    if not CACHE_IGNORE.exists():
+        CACHE_IGNORE.write_text("*")
+
+
+def _cache_read() -> npt.NDArray[np.bool_]:
+    if CACHE_PRIMES.exists():
+        return cast(npt.NDArray[np.bool_], np.load(CACHE_PRIMES))
+    return np.zeros(2, dtype=np.bool_)
+
+
+@atexit.register
+def _cache_write() -> None:
+    if _PRIME_MASK_CHANGED and _PRIME_MASK is not None:
+        warnings.warn(f"Writing prime cache (n={len(_PRIME_MASK)}, {CACHE_PRIMES})")
+        _cache_init()
+        np.save(CACHE_PRIMES, _PRIME_MASK)
+
+
 def prime_mask(n: int) -> np.ndarray:
     """Generate boolean array of length N, where prime indices are True."""
-    primes = np.ones(n, dtype=bool)
-    primes[:2] = False
-    for i in range(2, n):
-        if primes[i]:
-            # Mark all multiples of i as composite
-            composite = 2 * i
-            while composite < n:
-                primes[composite] = False
-                composite += i
-    return primes
+    global _PRIME_MASK, _PRIME_MASK_CHANGED
+    if _PRIME_MASK is None:
+        _PRIME_MASK = _cache_read()
+    if (alloc := n - len(_PRIME_MASK)) > 0:
+        warnings.warn(f"Cache miss on prime mask ({n=}, cached={len(_PRIME_MASK)})")
+        # Extend prime mask up to N
+        _PRIME_MASK = np.pad(_PRIME_MASK, (0, alloc), constant_values=True)
+        _PRIME_MASK.flags.writeable = True
+        for i in range(2, n):
+            if _PRIME_MASK[i]:
+                # Mark all multiples of i as composite
+                composite = 2 * i
+                while composite < n:
+                    _PRIME_MASK[composite] = False
+                    composite += i
+
+        # Ensure cache remains valid
+        _PRIME_MASK_CHANGED = True
+        _PRIME_MASK.flags.writeable = False
+    return _PRIME_MASK
 
 
 def prime_list(n: int) -> list[int]:
@@ -63,10 +104,11 @@ def prime_list(n: int) -> list[int]:
 @functools.lru_cache
 def is_prime(n: int) -> bool:
     """Return True if the input is prime."""
-    if n <= 3:
-        return n > 1
+    mask = _PRIME_MASK if _PRIME_MASK is not None else _cache_read()
+    if n < len(mask):
+        return cast(bool, mask[n])
     if n % 2 == 0 or n % 3 == 0:
-        return False
+        return n == 3  # 1 and 2 are guaranteed covered by the mask
     for i in range(5, math.floor(math.sqrt(n)) + 1, 6):
         if n % i == 0 or n % (i + 2) == 0:
             return False

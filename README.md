@@ -11,11 +11,11 @@ solutions is included in the euler/data directory.
 
 Install using [poetry](https://python-poetry.org/docs/#installation):
 
-```console
-$ poetry install
+```s
+poetry install
 ```
 
-**Note**: The solve function automatically copies the solution value to your clipboard using [pyperclip](https://pypi.org/project/pyperclip/). If you are on Linux, [xclip](http://manpages.ubuntu.com/manpages/xenial/man1/xclip.1.html) is required for this functionality to work.
+**Note**: The `euler solve` command copies the solution to your clipboard using [pyperclip](https://pypi.org/project/pyperclip/). Some platforms may require an additional dependency for this to work (e.g. [xclip](http://manpages.ubuntu.com/manpages/xenial/man1/xclip.1.html) for Ubuntu).
 
 ## Usage
 
@@ -23,16 +23,16 @@ Installing the package adds the `euler` entry point.
 
 To solve already completed problems:
 
-```console
-$ euler solve 45 54
+```s
+euler solve 45 54
 [0.08013 sec]    euler.problem_45.solve()       = 1533776805
 [0.04725 sec]    euler.problem_54.solve()       = 376
 ```
 
 To scrape any missing data for problems:
 
-```console
-$ euler scrape 133
+```s
+euler scrape 133
  -- Created: 'c:\\users\\jthom\\code\\euler\\euler\\problem_133.py'
  -- Created: 'c:\\users\\jthom\\code\\euler\\tests\\test_problem_133.py'
 ```

@@ -28,7 +28,8 @@ def print_result(func: Solver, verbose: bool = False) -> Solver:
         f_repr = f"{func.__module__}.{func.__name__}({','.join(params)})"
         print(f"[{t_1 - t_0:.5f} sec]\t", f_repr, "\t=", res)
         # Copy result to clipboard
-        pyperclip.copy(str(res))
+        if pyperclip.is_available():
+            pyperclip.copy(str(res))
         return res
 
     return cast(Solver, wrapper)

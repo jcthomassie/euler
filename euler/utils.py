@@ -118,8 +118,8 @@ def euclid(m: int, n: int) -> Triangle:
 
     https://en.wikipedia.org/wiki/Formulas_for_generating_Pythagorean_triples
     """
-    m2 = m ** 2
-    n2 = n ** 2
+    m2 = m**2
+    n2 = n**2
     return (
         m2 - n2,  # A
         2 * m * n,  # B

@@ -18,6 +18,7 @@ beautifulsoup4 = "^4.11.1"
 black = "^22.10.0"
 isort = "^5.9.1"
 flake8 = "^5.0.4"
+flake8-pyproject = "^1.1.0.post0"
 mypy = "^0.982"
 types-requests = "^2.25.0"
 pytest = "^7.2.0"
@@ -29,25 +30,22 @@ requests-mock = "^1.9.3"
 euler = 'euler.__main__:main'
 
 [tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-line_length = 88
+src_paths = ["euler", "tests"]
+profile = "black"
 
 [tool.flake8]
-ignore = "E203, E266, E501, W503"
 max-line-length = 88
-max-complexity = 18
+ignore = "E203, E266, E501, W503"
 select = "B,C,E,F,W,T4,B9"
+exclude = ["__pycache__", ".*"]
 
 [tool.mypy]
-ignore_missing_imports = true
-python_version = 3.9
+python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
 warn_unused_ignores = true
 allow_untyped_defs = false
+ignore_missing_imports = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

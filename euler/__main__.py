@@ -31,7 +31,7 @@ def _scrape(args: argparse.Namespace) -> None:
 
 
 def _list(args: argparse.Namespace) -> None:
-    for _, name, ispkg in pkgutil.iter_modules(path=euler.__path__):  # type: ignore
+    for _, name, ispkg in pkgutil.iter_modules(path=euler.__path__):
         if not ispkg and name.startswith("problem_"):
             if args.verbose:
                 print(name)

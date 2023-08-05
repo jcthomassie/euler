@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 
 _OUTDIR = Path(__file__).parent
 _FILE_TEMPLATE = '''# -*- coding: utf-8 -*-
-"""
+r"""
 {}
 """
 from .utils import print_result

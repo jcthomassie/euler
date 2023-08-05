@@ -47,7 +47,7 @@ jobs:
     - name: mypy
       run: poetry run mypy .
     - name: pytest
-      run: poetry run pytest --color=yes --cov-report=xml --cov=./
+      run: poetry run pytest --include-solved --color=yes --cov-report=xml --cov=./
 
     - name: Upload codecov
       uses: codecov/codecov-action@v3

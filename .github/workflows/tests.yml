@@ -40,12 +40,10 @@ jobs:
     - name: Install euler
       run: poetry install --no-interaction
 
-    - name: isort
-      run: poetry run isort . --check
+    - name: ruff
+      run: poetry run ruff check .
     - name: black
       run: poetry run black . --check
-    - name: flake8
-      run: poetry run flake8 .
     - name: mypy
       run: poetry run mypy .
     - name: pytest

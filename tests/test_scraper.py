@@ -3,7 +3,6 @@ from typing import Iterator
 
 import pytest
 import requests_mock
-from pytest_mock import MockerFixture
 
 from euler.scraper import Problem
 
@@ -86,42 +85,30 @@ class TestProblem:
 
     @pytest.fixture
     def problem(self, project_euler_html: None) -> Iterator[Problem]:
-        yield Problem(PROBLEM)
+        yield Problem.from_number(PROBLEM)
 
-    def test_source_url(self, problem: Problem) -> None:
-        assert problem.source_url == PROBLEM_URL
+    def test_url(self, problem: Problem) -> None:
+        assert problem.url == PROBLEM_URL
 
-    def test_module_path(self, problem: Problem) -> None:
+    def test_path_module(self, problem: Problem) -> None:
         import euler.problem_1
 
-        assert problem.module_path == Path(euler.problem_1.__file__)
+        assert problem.path_module == Path(euler.problem_1.__file__)
 
-    def test_test_module_path(self, problem: Problem) -> None:
+    def test_path_test_module(self, problem: Problem) -> None:
         import tests.test_problem_1
 
-        assert problem.test_module_path == Path(tests.test_problem_1.__file__)
+        assert problem.path_test_module == Path(tests.test_problem_1.__file__)
 
     def test_get_title(self, problem: Problem) -> None:
         assert problem.get_title() == PROBLEM_TITLE
 
-    def test_create_module(
-        self, problem: Problem, mocker: MockerFixture, tmp_path: Path
-    ) -> None:
-        out = tmp_path / "problem.py"
-        mocker.patch(
-            "euler.scraper.Problem.module_path",
-            new=mocker.PropertyMock(return_value=out),
-        )
+    def test_create_module(self, problem: Problem, tmp_path: Path) -> None:
+        problem.path_module = tmp_path / "problem.py"
         problem.create_module()
-        assert out.is_file()
+        assert problem.path_module.is_file()
 
-    def test_create_test_module(
-        self, problem: Problem, mocker: MockerFixture, tmp_path: Path
-    ) -> None:
-        out = tmp_path / "test_problem.py"
-        mocker.patch(
-            "euler.scraper.Problem.test_module_path",
-            new=mocker.PropertyMock(return_value=out),
-        )
+    def test_create_test_module(self, problem: Problem, tmp_path: Path) -> None:
+        problem.path_test_module = tmp_path / "test_problem.py"
         problem.create_test_module()
-        assert out.is_file()
+        assert problem.path_test_module.is_file()

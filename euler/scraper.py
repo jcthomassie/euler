@@ -2,8 +2,9 @@
 """Implements programmatic scraping of problems from https://projecteuler.net"""
 import os
 import textwrap
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Self
 
 import requests
 from bs4 import BeautifulSoup
@@ -34,32 +35,33 @@ def test_solution() -> None:
 """
 
 
+@dataclass
 class Problem:
     """
     Handles all scraping, downloading, and formatting for any Project Euler
     problem listed on https://projecteuler.net/archive
     """
 
-    def __init__(self, number: int) -> None:
-        self.number = number
-        self._soup = None
+    number: int
+    url: str
+    path_module: Path
+    path_test_module: Path
 
-    @property
-    def source_url(self) -> str:
-        return f"https://projecteuler.net/problem={self.number}"
+    _soup: BeautifulSoup | None = None
 
-    @property
-    def module_path(self) -> Path:
-        return _OUTDIR / f"problem_{self.number}.py"
-
-    @property
-    def test_module_path(self) -> Path:
-        return _OUTDIR.parent / "tests" / f"test_problem_{self.number}.py"
+    @classmethod
+    def from_number(cls, number: int) -> Self:
+        return cls(
+            number=number,
+            url=f"https://projecteuler.net/problem={number}",
+            path_module=_OUTDIR / f"problem_{number}.py",
+            path_test_module=_OUTDIR.parent / "tests" / f"test_problem_{number}.py",
+        )
 
     @property
     def soup(self) -> BeautifulSoup:
         if self._soup is None:
-            response = requests.get(self.source_url)
+            response = requests.get(self.url)
             self._soup = BeautifulSoup(response.text, "html.parser")
         return self._soup
 
@@ -92,7 +94,7 @@ class Problem:
         lines = []
         lines.append(self.get_title())
         lines.append("=" * len(lines[-1]))
-        lines.append(self.source_url)
+        lines.append(self.url)
         for block in self.get_statement().split("\n"):
             block = block.strip()
             if not block:
@@ -113,22 +115,22 @@ class Problem:
 
         Does nothing if the module already exists.
         """
-        if self.module_path.exists():
+        if self.path_module.exists():
             return None
-        with self.module_path.open("w", encoding="utf-8") as h:
+        with self.path_module.open("w", encoding="utf-8") as h:
             h.write(_FILE_TEMPLATE.format(self.module_docstring()))
-            return self.module_path
+            return self.path_module
 
     def create_test_module(self) -> Optional[Path]:
         """Create a python module for testing the problem.
 
         Does nothing if the module already exists.
         """
-        if self.test_module_path.exists():
+        if self.path_test_module.exists():
             return None
-        with self.test_module_path.open("w", encoding="utf-8") as h:
+        with self.path_test_module.open("w", encoding="utf-8") as h:
             h.write(_TEST_FILE_TEMPLATE.format(self.number))
-            return self.test_module_path
+            return self.path_test_module
 
     def download_files(self) -> list[Path]:
         """Download any associated data files for the problem.

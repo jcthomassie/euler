@@ -8,17 +8,17 @@ readme = "README.md"
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-numpy = "^1.25.2"
+python = ">=3.11,<=3.12"
+numpy = "^1.26.0"
 pyperclip = "^1.8.2"
 requests = "^2.31.0"
 beautifulsoup4 = "^4.12.2"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.7.0"
-mypy = "^1.4.1"
-types-requests = "^2.31.0.2"
-pytest = "^7.4.0"
+black = "^23.9.1"
+mypy = "^1.5.1"
+types-requests = "^2.31.0.8"
+pytest = "^7.4.2"
 pytest-cov = "^4.1.0"
 pytest-mock = "^3.11.1"
 requests-mock = "^1.11.0"
